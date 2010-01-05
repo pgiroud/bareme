@@ -4,7 +4,7 @@
   <groupId>ch.ge.afc</groupId>
   <artifactId>bareme</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>bareme</name>
   <url>http://maven.apache.org</url>
   <properties>
