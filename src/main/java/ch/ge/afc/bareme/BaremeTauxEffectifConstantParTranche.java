@@ -16,9 +16,12 @@
 package ch.ge.afc.bareme;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.ge.afc.util.BigDecimalUtil;
 import ch.ge.afc.util.HashCodeBuilder;
+import ch.ge.afc.util.TypeArrondi;
 
 /**
  * Barème à taux effectif défini par tranche et dont le taux est constant sur chacune des tranches.
@@ -62,6 +65,17 @@ public final class BaremeTauxEffectifConstantParTranche extends
 	
 	public void ajouterDerniereTranche(BigDecimal taux) {
 		getTranches().add(new TrancheBareme.DerniereTrancheBareme(taux));
+	}
+	
+	public BaremeTauxEffectifConstantParTranche homothetie(BigDecimal taux, TypeArrondi typeArrondi) {
+		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
+		for (TrancheBareme tranche : getTranches()) {
+			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
+		}
+		BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
+		bareme.setTypeArrondi(this.getTypeArrondi());
+		bareme.setTranches(tranchesHomothetiques);
+		return bareme;
 	}
 	
 	/* (non-Javadoc)
