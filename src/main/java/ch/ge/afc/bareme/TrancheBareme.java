@@ -18,6 +18,7 @@ package ch.ge.afc.bareme;
 
 import java.math.BigDecimal;
 
+import ch.ge.afc.util.BigDecimalUtil;
 import ch.ge.afc.util.HashCodeBuilder;
 import ch.ge.afc.util.TypeArrondi;
 
@@ -74,17 +75,20 @@ public class TrancheBareme {
 	/**
 	 * Une tranche peut être translatée. Translater une tranche consiste à
 	 * multiplier le montant imposable maximum par le rapport de translation
-	 * et à l'arrondir au francs le plus proche.
-	 * @param pRapport Le rapport de translation.
+	 * et à l'arrondir.
+	 * @param pRapport Le rapport de translation (ne peut pas être null et doit être strictement positif).
+	 * @param typeArrondi L'arrondi à effectuer sur la valeur obtenue. Ne doit pas être null.
 	 * @return Une nouvelle tranche translatée.
 	 */
 	public TrancheBareme homothetie(BigDecimal pRapport, TypeArrondi typeArrondi) {
+		if (!BigDecimalUtil.isStrictementPositif(pRapport)) throw new IllegalArgumentException("Le rapport d'homothétie '" + pRapport + "' ne peut pas être négatif ou null !!");
 		BigDecimal inter = this.getMontantMaxTranche().multiply(pRapport);
 		BigDecimal montantImposableMax = typeArrondi.arrondirMontant(inter);
 		return new TrancheBareme(montantImposableMax,this.getTauxOuMontant());
 	}
 
 	public TrancheBareme homothetieValeur(BigDecimal pRapport, TypeArrondi typeArrondi) {
+		if (!BigDecimalUtil.isStrictementPositif(pRapport)) throw new IllegalArgumentException("Le rapport d'homothétie '" + pRapport + "' ne peut pas être négatif ou null !!");
 		BigDecimal inter = this.getTauxOuMontant().multiply(pRapport);
 		BigDecimal tauxOuMontant = typeArrondi.arrondirMontant(inter);
 		return new TrancheBareme(this.getMontantMaxTranche(),tauxOuMontant);
