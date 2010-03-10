@@ -31,10 +31,13 @@ import ch.ge.afc.util.TypeArrondi;
  * @author <a href="mailto:patrick.giroud@etat.ge.ch">Patrick Giroud</a>
  *
  */
-public class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
+public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 
 	private LinkedList<Point> montants = new LinkedList<Point>();
 	private boolean listeTriee = true;
+	private TypeArrondi typeArrondi = TypeArrondi.CINQ_CTS;
+	private boolean definiAvantBorneInf;
+	private boolean definiApresBorneSup;
 	
     /**************************************************/
     /******* Accesseurs / Mutateurs *******************/
@@ -50,6 +53,28 @@ public class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 		montants.add(point);
 	}
 	
+	/**
+	 * @param typeArrondi the typeArrondi to set
+	 */
+	public void setTypeArrondi(TypeArrondi typeArrondi) {
+		this.typeArrondi = typeArrondi;
+	}
+
+	/**
+	 * @return the typeArrondi
+	 */
+	protected TypeArrondi getTypeArrondi() {
+		return typeArrondi;
+	}
+
+	public void setDefiniAvantBorneInf(boolean defini) {
+		definiAvantBorneInf = defini;
+	}
+	
+	public void setDefiniApresBorneSup(boolean defini) {
+		definiApresBorneSup = defini;
+	}
+	
 	protected BigDecimal interpolationLineaire(BigDecimal assiette, Point borneInf, Point borneSup) {
 		if (0 == assiette.compareTo(borneInf.getAbscisse())) return borneInf.getOrdonnee();
 		if (0 == assiette.compareTo(borneSup.getAbscisse())) return borneSup.getOrdonnee();
@@ -57,11 +82,10 @@ public class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 		BigDecimal deltaAssietteTranche = borneSup.getAbscisse().subtract(borneInf.getAbscisse());
 		BigDecimal deltaAssiette = assiette.subtract(borneInf.getAbscisse());
 		BigDecimal deltaImpot = deltaImpotTranche.multiply(deltaAssiette).divide(deltaAssietteTranche,3,BigDecimal.ROUND_HALF_UP);
-		deltaImpot = TypeArrondi.CINQ_CTS.arrondirMontant(deltaImpot);
-		return borneInf.getOrdonnee().add(deltaImpot); 
+		return getTypeArrondi().arrondirMontant(borneInf.getOrdonnee().add(deltaImpot)); 
 	}
 	
-	
+
 	/* (non-Javadoc)
 	 * @see ch.ge.afc.calcul.bareme.Bareme#calcul(java.math.BigDecimal)
 	 */
@@ -71,10 +95,18 @@ public class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 			Collections.sort(montants);
 			listeTriee = true;
 		}
-		BigDecimal assietteMaximumDansBareme = montants.getLast().getAbscisse();
+		Point dernierPoint = montants.getLast();
+		BigDecimal assietteMaximumDansBareme = dernierPoint.getAbscisse();
 		int comparaisonAvecMax = assiette.compareTo(assietteMaximumDansBareme);
-		if (0 < comparaisonAvecMax) throw new IllegalArgumentException("Il est impossible de calculer l'impôt pour une assiette de " + assiette + " car le barème s'arrête à " + assietteMaximumDansBareme);
-		if (0 == comparaisonAvecMax) return montants.get(montants.size() -1).getOrdonnee();
+		if (0 < comparaisonAvecMax && !definiApresBorneSup) throw new IllegalArgumentException("Il est impossible de calculer l'impôt pour une assiette de " + assiette + " car le barème s'arrête à " + assietteMaximumDansBareme);
+		else if (0 <= comparaisonAvecMax) return dernierPoint.getOrdonnee();
+		
+		Point premierPoint = montants.getFirst();
+		BigDecimal assietteMinimumDansBareme = premierPoint.getAbscisse();
+		int comparaisonAvecMin = assietteMinimumDansBareme.compareTo(assiette);
+		if (0 < comparaisonAvecMin && !definiAvantBorneInf) throw new IllegalArgumentException("Il est impossible de calculer l'impôt pour une assiette de " + assiette + " car le barème commence à " + assietteMinimumDansBareme);
+		else if (0 <= comparaisonAvecMin) return premierPoint.getOrdonnee();
+		
 		Point montantSup = null;
 		Point montantInf = null;
 		for (ListIterator<Point> iter = montants.listIterator(); iter.hasNext();) {
