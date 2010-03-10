@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ge.afc.bareme.BaremeConstantParTranche;
 import static org.junit.Assert.*;
 
 public class BaremeConstantParTrancheTest {
