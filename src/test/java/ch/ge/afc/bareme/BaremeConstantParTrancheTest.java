@@ -45,5 +45,20 @@ public class BaremeConstantParTrancheTest {
 		assertEquals("Abscisse 2001",new BigDecimal("3"),bareme.calcul(new BigDecimal("2001")));
 		assertEquals("Abscisse 10000",new BigDecimal("3"),bareme.calcul(new BigDecimal("10000")));
 	}
-	
+
+    @Test
+    public void baremeFermeAGauche() {
+        BaremeConstantParTranche bareme = new BaremeConstantParTranche();
+        bareme.setMontantMaxNonInclus();
+        bareme.ajouterTranche(1000, 1);
+        bareme.ajouterTranche(2000, 2);
+        bareme.ajouterDerniereTranche(3);
+        assertEquals("Abscisse 0",new BigDecimal("1"),bareme.calcul(BigDecimal.ZERO));
+        assertEquals("Abscisse 1000",new BigDecimal("2"),bareme.calcul(new BigDecimal("1000")));
+        assertEquals("Abscisse 1001",new BigDecimal("2"),bareme.calcul(new BigDecimal("1001")));
+        assertEquals("Abscisse 1500",new BigDecimal("2"),bareme.calcul(new BigDecimal("1500")));
+        assertEquals("Abscisse 2000",new BigDecimal("3"),bareme.calcul(new BigDecimal("2000")));
+        assertEquals("Abscisse 2001",new BigDecimal("3"),bareme.calcul(new BigDecimal("2001")));
+        assertEquals("Abscisse 10000",new BigDecimal("3"),bareme.calcul(new BigDecimal("10000")));
+    }
 }

@@ -33,20 +33,6 @@ import ch.ge.afc.util.TypeArrondi;
 public final class BaremeTauxEffectifConstantParTranche extends
 		BaremeTauxEffectifParTranche {
 
-	/**************************************************/
-	/****************** Attributs *********************/
-	/**************************************************/
-
-	private boolean montantMaxNonInclus;
-	
-    /**************************************************/
-    /************* Accesseurs / Mutateurs *************/
-    /**************************************************/
-
-	public void setMontantMaxNonInclus() {
-		montantMaxNonInclus = true;
-	}
-	
     /**************************************************/
     /******************* Méthodes *********************/
     /**************************************************/
@@ -116,5 +102,7 @@ public final class BaremeTauxEffectifConstantParTranche extends
 				.add(getSeuil()).add(getTranches()).hash();
 	}
 
-	
+	public List<TrancheBareme> obtenirTranches() {
+		return new ArrayList<TrancheBareme>(getTranches()); 
+	}
 }

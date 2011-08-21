@@ -41,7 +41,10 @@ public class BaremeConstantParTranche extends BaremeParTranche {
 	@Override
 	protected BigDecimal calculSansSeuil(BigDecimal assiette) {
 		for (TrancheBareme tranche : getTranches()) {
-			if (null != tranche.getMontantMaxTranche() && 0 >= assiette.compareTo(tranche.getMontantMaxTranche())) return tranche.getTauxOuMontant();
+			if (null != tranche.getMontantMaxTranche() &&
+                    ((!montantMaxNonInclus && 0 >= assiette.compareTo(tranche.getMontantMaxTranche()))
+                            || (montantMaxNonInclus && 0 > assiette.compareTo(tranche.getMontantMaxTranche()))
+                    )) return tranche.getTauxOuMontant();
 		}
 		return getTranches().get(getTranches().size()-1).getTauxOuMontant();
 	}

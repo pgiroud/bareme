@@ -30,7 +30,7 @@ import ch.ge.afc.util.TypeArrondi;
  * @author <a href="mailto:patrick.giroud@etat.ge.ch">Patrick Giroud</a>
  *
  */
-public abstract class BaremeParTranche implements Bareme {
+abstract class BaremeParTranche implements Bareme {
 	
 	/**************************************************/
 	/****************** Attributs *********************/
@@ -39,7 +39,9 @@ public abstract class BaremeParTranche implements Bareme {
 	private List<TrancheBareme> tranches = new ArrayList<TrancheBareme>();
 	private TypeArrondi typeArrondi;
 	private BigDecimal seuil;
-	
+    protected boolean montantMaxNonInclus;
+
+
     /**************************************************/
     /************* Accesseurs / Mutateurs *************/
     /**************************************************/
@@ -83,6 +85,10 @@ public abstract class BaremeParTranche implements Bareme {
 		return seuil;
 	}
 	
+    public void setMontantMaxNonInclus() {
+        montantMaxNonInclus = true;
+    }
+
     /**************************************************/
     /******************* Méthodes *********************/
     /**************************************************/
@@ -91,7 +97,7 @@ public abstract class BaremeParTranche implements Bareme {
 		getTranches().add(new TrancheBareme(montantImposable,montant));
 	}
 	
-	protected void ajouterDerniereTranche(BigDecimal montant) {
+	public void ajouterDerniereTranche(BigDecimal montant) {
 		getTranches().add(new TrancheBareme.DerniereTrancheBareme(montant));
 	}
 
