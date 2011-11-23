@@ -35,7 +35,7 @@ public abstract class BaremeTauxEffectifParTranche extends BaremeParTranche impl
 	 */
 	@Override
 	public BigDecimal calculSansSeuil(BigDecimal assiette) {
-		return this.getTypeArrondi().arrondirMontant(assiette.multiply(getTaux(assiette)));
+		return this.getTypeArrondiSurChaqueTranche().arrondirMontant(assiette.multiply(getTaux(assiette)));
 	}
 	
 }

@@ -32,7 +32,7 @@ public class BaremeTxMarginalEtEffectifParTranche extends
 
 	@Override
 	public BigDecimal calcul(BigDecimal pAssiette) {
-		if (0 > getMontantImposableMaxDeAvantDerniereTranche().compareTo(pAssiette)) return getTypeArrondi().arrondirMontant(pAssiette.multiply(this.getTauxDerniereTranche()));
+		if (0 > getMontantImposableMaxDeAvantDerniereTranche().compareTo(pAssiette)) return getTypeArrondiSurChaqueTranche().arrondirMontant(pAssiette.multiply(this.getTauxDerniereTranche()));
 		else return super.calcul(pAssiette);
 	}
 
@@ -40,8 +40,9 @@ public class BaremeTxMarginalEtEffectifParTranche extends
 		
 		public BaremeTxMarginalEtEffectifParTranche construire() {
 			BaremeTxMarginalEtEffectifParTranche bareme = new BaremeTxMarginalEtEffectifParTranche();
-			bareme.setTranches(getTranches());
-			bareme.setTypeArrondi(getTypeArrondi());
+			bareme.setTranches(tranches);
+			bareme.setTypeArrondiSurChaqueTranche(getTypeArrondiSurChaqueTranche());
+            bareme.setTypeArrondiGlobal(getTypeArrondiGlobal());
 			bareme.setSeuil(getSeuil());
 			return bareme;
 		}

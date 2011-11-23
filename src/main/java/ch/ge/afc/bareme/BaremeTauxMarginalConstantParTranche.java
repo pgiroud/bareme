@@ -34,10 +34,10 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 		BigDecimal resultat = ZERO;
 		BigDecimal montantMaxTranchePrecedente = ZERO;
 		for (TrancheBareme tranche : getTranches()) {
-			resultat = resultat.add(getTypeArrondi().arrondirMontant(tranche.calcul(montantMaxTranchePrecedente,pAssiette)));
+			resultat = resultat.add(getTypeArrondiSurChaqueTranche().arrondirMontant(tranche.calcul(montantMaxTranchePrecedente,pAssiette)));
 			montantMaxTranchePrecedente = tranche.getMontantMaxTranche();
 		}
-		return resultat;
+		return getTypeArrondiGlobal().arrondirMontant(resultat);
 	}
 
 	
@@ -57,7 +57,8 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
 		}
 		BaremeTauxMarginalConstantParTranche bareme = new BaremeTauxMarginalConstantParTranche();
-		bareme.setTypeArrondi(this.getTypeArrondi());
+		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
+        bareme.setTypeArrondiGlobal(this.getTypeArrondiGlobal());
 		bareme.setTranches(tranchesHomothetiques);
 		return bareme;
 	}
@@ -67,8 +68,9 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
     /**************************************************/
 	
 	public static class Constructeur {
-		private List<TrancheBareme> tranches = new ArrayList<TrancheBareme>();
-		private TypeArrondi typeArrondi;
+		protected List<TrancheBareme> tranches = new ArrayList<TrancheBareme>();
+		private TypeArrondi typeArrondiSurChaqueTranche = TypeArrondi.CT;
+        private TypeArrondi typeArrondiGlobal = TypeArrondi.CT;
 		private BigDecimal seuil;
 		
 		public Constructeur() {
@@ -78,14 +80,19 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 		public Constructeur(BaremeTauxMarginalConstantParTranche bareme) {
 			super();
 			tranches = bareme.getTranches();
-			typeArrondi = bareme.getTypeArrondi();
+			typeArrondiSurChaqueTranche = bareme.getTypeArrondiSurChaqueTranche();
 		}
 
-		public Constructeur typeArrondi(TypeArrondi typeArrondi) {
-			this.typeArrondi = typeArrondi;
+		public Constructeur typeArrondiSurChaqueTranche(TypeArrondi typeArrondi) {
+			this.typeArrondiSurChaqueTranche = typeArrondi;
 			return this;
 		}
-		
+
+        public Constructeur typeArrondiGlobal(TypeArrondi typeArrondi) {
+            this.typeArrondiGlobal = typeArrondi;
+            return this;
+        }
+
 		public Constructeur seuil(int montant) {
 			this.seuil = new BigDecimal(montant);
 			return this;
@@ -101,22 +108,24 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 			return this;
 		}
 		
-		public List<TrancheBareme> getTranches() {
-			return tranches;
+		protected TypeArrondi getTypeArrondiSurChaqueTranche() {
+			return typeArrondiSurChaqueTranche;
 		}
-		
-		protected TypeArrondi getTypeArrondi() {
-			return typeArrondi;
+
+        protected TypeArrondi getTypeArrondiGlobal() {
+			return typeArrondiGlobal;
 		}
-		
+
+
 		protected BigDecimal getSeuil() {
 			return seuil;
 		}
 		
 		public BaremeTauxMarginalConstantParTranche construire() {
 			BaremeTauxMarginalConstantParTranche bareme = new BaremeTauxMarginalConstantParTranche();
-			bareme.setTranches(getTranches());
-			bareme.setTypeArrondi(getTypeArrondi());
+			bareme.setTranches(tranches);
+			bareme.setTypeArrondiSurChaqueTranche(getTypeArrondiSurChaqueTranche());
+            bareme.setTypeArrondiGlobal(getTypeArrondiGlobal());
 			bareme.setSeuil(getSeuil());
 			return bareme;
 		}

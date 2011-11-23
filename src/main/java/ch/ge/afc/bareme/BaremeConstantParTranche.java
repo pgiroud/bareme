@@ -27,6 +27,15 @@ import ch.ge.afc.util.TypeArrondi;
  */
 public class BaremeConstantParTranche extends BaremeParTranche {
 
+    public BaremeConstantParTranche() {
+        super();
+    }
+
+    public BaremeConstantParTranche(BigDecimal seuil) {
+        super();
+        setSeuil(seuil);
+    }
+
 	public void ajouterTranche(int montantImposable, int montant) {
 		this.ajouterTranche(new BigDecimal(montantImposable), new BigDecimal(montant));
 	}
@@ -55,7 +64,7 @@ public class BaremeConstantParTranche extends BaremeParTranche {
 			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
 		}
 		BaremeConstantParTranche bareme = new BaremeConstantParTranche();
-		bareme.setTypeArrondi(this.getTypeArrondi());
+		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
 		bareme.setTranches(tranchesHomothetiques);
 		return bareme;
 	}
@@ -66,7 +75,7 @@ public class BaremeConstantParTranche extends BaremeParTranche {
 			tranchesHomothetiques.add(tranche.homothetieValeur(taux,typeArrondi));
 		}
 		BaremeConstantParTranche bareme = new BaremeConstantParTranche();
-		bareme.setTypeArrondi(this.getTypeArrondi());
+		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
 		bareme.setTranches(tranchesHomothetiques);
 		return bareme;
 	}

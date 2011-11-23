@@ -37,7 +37,8 @@ abstract class BaremeParTranche implements Bareme {
 	/**************************************************/
 
 	private List<TrancheBareme> tranches = new ArrayList<TrancheBareme>();
-	private TypeArrondi typeArrondi;
+	private TypeArrondi typeArrondiSurChaqueTranche;
+    private TypeArrondi typeArrondiGlobal;
 	private BigDecimal seuil;
     protected boolean montantMaxNonInclus;
 
@@ -56,8 +57,8 @@ abstract class BaremeParTranche implements Bareme {
 	/**
 	 * @param typeArrondi the typeArrondi to set
 	 */
-	public void setTypeArrondi(TypeArrondi typeArrondi) {
-		this.typeArrondi = typeArrondi;
+	public void setTypeArrondiSurChaqueTranche(TypeArrondi typeArrondi) {
+		this.typeArrondiSurChaqueTranche = typeArrondi;
 	}
 
 	/**
@@ -77,8 +78,8 @@ abstract class BaremeParTranche implements Bareme {
 	/**
 	 * @return the typeArrondi
 	 */
-	protected TypeArrondi getTypeArrondi() {
-		return typeArrondi;
+	protected TypeArrondi getTypeArrondiSurChaqueTranche() {
+		return typeArrondiSurChaqueTranche;
 	}
 
 	protected BigDecimal getSeuil() {
@@ -87,6 +88,14 @@ abstract class BaremeParTranche implements Bareme {
 	
     public void setMontantMaxNonInclus() {
         montantMaxNonInclus = true;
+    }
+
+    protected TypeArrondi getTypeArrondiGlobal() {
+        return typeArrondiGlobal;
+    }
+
+    public void setTypeArrondiGlobal(TypeArrondi typeArrondiGlobal) {
+        this.typeArrondiGlobal = typeArrondiGlobal;
     }
 
     /**************************************************/

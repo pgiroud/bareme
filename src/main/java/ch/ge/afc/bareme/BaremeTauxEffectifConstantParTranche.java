@@ -59,7 +59,7 @@ public final class BaremeTauxEffectifConstantParTranche extends
 			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
 		}
 		BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
-		bareme.setTypeArrondi(this.getTypeArrondi());
+		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
 		bareme.setTranches(tranchesHomothetiques);
 		return bareme;
 	}
@@ -90,7 +90,7 @@ public final class BaremeTauxEffectifConstantParTranche extends
 		if (!(obj instanceof BaremeTauxEffectifConstantParTranche)) return false;
 		BaremeTauxEffectifConstantParTranche bareme = (BaremeTauxEffectifConstantParTranche)obj;
 		if (this.montantMaxNonInclus != bareme.montantMaxNonInclus) return false;
-		if (!this.getTypeArrondi().equals(bareme.getTypeArrondi())) return false;
+		if (!this.getTypeArrondiSurChaqueTranche().equals(bareme.getTypeArrondiSurChaqueTranche())) return false;
 		if (0 != BigDecimalUtil.nullSafeCompare(this.getSeuil(), bareme.getSeuil())) return false;
 		if (!this.getTranches().equals(bareme.getTranches())) return false;
 		return true;
@@ -98,7 +98,7 @@ public final class BaremeTauxEffectifConstantParTranche extends
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().add(montantMaxNonInclus).add(getTypeArrondi())
+		return new HashCodeBuilder().add(montantMaxNonInclus).add(getTypeArrondiSurChaqueTranche())
 				.add(getSeuil()).add(getTranches()).hash();
 	}
 
