@@ -7,7 +7,12 @@
   <version>1.0.1</version>
   <name>bareme</name>
   <url>http://maven.apache.org</url>
-  <properties>
+    <scm>
+        <connection>scm:git:git@github.com:pgiroud/bareme.git</connection>
+        <url>scm:git:git@github.com:pgiroud/bareme.git</url>
+        <developerConnection>scm:git:git@github.com:pgiroud/bareme.git</developerConnection>
+    </scm>
+    <properties>
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      <compileSource>1.6</compileSource>
   </properties>
