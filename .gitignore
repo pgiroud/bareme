@@ -1,1 +1,13 @@
-target
+# Maven target
+target/
+
+# eclipse conf files
+.classpath
+.project
+.settings/
+
+# idea conf files
+.idea/
+*.iml
+*.ipr
+*.iws
