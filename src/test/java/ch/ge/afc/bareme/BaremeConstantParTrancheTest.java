@@ -1,17 +1,17 @@
 /**
- * This file is part of CalculImpotCH.
+ * This file is part of impotch/bareme.
  *
- * CalculImpotCH is free software: you can redistribute it and/or modify
+ * impotch/bareme is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License.
  *
- * CalculImpotCH is distributed in the hope that it will be useful,
+ * impotch/bareme is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with CalculImpotCH.  If not, see <http://www.gnu.org/licenses/>.
+ * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.ge.afc.bareme;
 
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class BaremeConstantParTrancheTest {
 
@@ -37,13 +37,13 @@ public class BaremeConstantParTrancheTest {
 
 	@Test
 	public void baremeSimple() {
-		assertEquals("Abscisse 0",new BigDecimal("1"),bareme.calcul(BigDecimal.ZERO));
-		assertEquals("Abscisse 1000",new BigDecimal("1"),bareme.calcul(new BigDecimal("1000")));
-		assertEquals("Abscisse 1001",new BigDecimal("2"),bareme.calcul(new BigDecimal("1001")));
-		assertEquals("Abscisse 1500",new BigDecimal("2"),bareme.calcul(new BigDecimal("1500")));
-		assertEquals("Abscisse 2000",new BigDecimal("2"),bareme.calcul(new BigDecimal("2000")));
-		assertEquals("Abscisse 2001",new BigDecimal("3"),bareme.calcul(new BigDecimal("2001")));
-		assertEquals("Abscisse 10000",new BigDecimal("3"),bareme.calcul(new BigDecimal("10000")));
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("1");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo("1");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1500))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2001))).isEqualTo("3");
+        assertThat(bareme.calcul(BigDecimal.valueOf(10000))).isEqualTo("3");
 	}
 
     @Test
@@ -53,12 +53,12 @@ public class BaremeConstantParTrancheTest {
         bareme.ajouterTranche(1000, 1);
         bareme.ajouterTranche(2000, 2);
         bareme.ajouterDerniereTranche(3);
-        assertEquals("Abscisse 0",new BigDecimal("1"),bareme.calcul(BigDecimal.ZERO));
-        assertEquals("Abscisse 1000",new BigDecimal("2"),bareme.calcul(new BigDecimal("1000")));
-        assertEquals("Abscisse 1001",new BigDecimal("2"),bareme.calcul(new BigDecimal("1001")));
-        assertEquals("Abscisse 1500",new BigDecimal("2"),bareme.calcul(new BigDecimal("1500")));
-        assertEquals("Abscisse 2000",new BigDecimal("3"),bareme.calcul(new BigDecimal("2000")));
-        assertEquals("Abscisse 2001",new BigDecimal("3"),bareme.calcul(new BigDecimal("2001")));
-        assertEquals("Abscisse 10000",new BigDecimal("3"),bareme.calcul(new BigDecimal("10000")));
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("1");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1500))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualTo("3");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2001))).isEqualTo("3");
+        assertThat(bareme.calcul(BigDecimal.valueOf(10000))).isEqualTo("3");
     }
 }
