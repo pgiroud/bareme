@@ -23,7 +23,7 @@ import org.impotch.util.HashCodeBuilder;
 import org.impotch.util.TypeArrondi;
 
 /**
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public class TrancheBareme {

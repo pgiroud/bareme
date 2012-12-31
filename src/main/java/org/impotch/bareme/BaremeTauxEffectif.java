@@ -21,7 +21,7 @@ import java.math.BigDecimal;
  * Un barème à taux effectif est une fonction mathématique simple : on multiplie
  * le montant fournit en paramètre par le taux effectif (qui peut dépendre du montant).
  * 
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  */
 public interface BaremeTauxEffectif extends Bareme {
 

@@ -27,7 +27,7 @@ import org.impotch.util.TypeArrondi;
  * Barème à taux effectif défini par tranche et dont le taux est constant sur chacune des tranches.
  * Ces barèmes sont typiquement utilisés pour l'impôt à la source.
  *
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public final class BaremeTauxEffectifConstantParTranche extends

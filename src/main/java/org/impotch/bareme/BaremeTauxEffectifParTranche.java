@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 /**
  * Barème défini par tranche et dont le taux est fourni dans une tranche.
  * 
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public abstract class BaremeTauxEffectifParTranche extends BaremeParTranche implements

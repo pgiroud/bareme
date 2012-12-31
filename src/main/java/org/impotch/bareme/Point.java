@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 
 
 /**
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public class Point implements Comparable<Point> {

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * la dernière tranche est définie par un taux effectif. C'est la raison pour laquelle
  * le taux marginal n'est pas croissant mais décroissant sur la dernière tranche.
  * 
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public class BaremeTxMarginalEtEffectifParTranche extends

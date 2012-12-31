@@ -28,7 +28,7 @@ import org.impotch.util.TypeArrondi;
  * Pour avoir la valeur du barème en un point donné, on recherche tout d'abord l'unique intervalle contenant ce point
  * puis on fait une interpolation linéaire pour trouver la valeur.
  *
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
