@@ -61,6 +61,13 @@ public class BaremeConstantParTranche extends BaremeParTranche {
 		return getTranches().get(getTranches().size()-1).getTauxOuMontant();
 	}
 
+    /**
+     * Retourne un barème constant par tranche dont les tranches sont translatés du facteur taux.
+     * Ainsi, pour un taux de 100 %, le barème obtenu sera identique au barème fourni.
+     * @param taux  le taux de dilatation des tranches (en général, il est plus grand que 100 % en cas d'inflation)
+     * @param typeArrondi L'arrondi appliqué sur chacune des tranches après application du taux.
+     * @return le barème dont les tranches sont translatées (les valeurs sont quant à elles inchangées).
+     */
 	public BaremeConstantParTranche homothetieTranche(BigDecimal taux, TypeArrondi typeArrondi) {
 		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
 		for (TrancheBareme tranche : getTranches()) {
@@ -72,6 +79,12 @@ public class BaremeConstantParTranche extends BaremeParTranche {
 		return bareme;
 	}
 
+    /**
+     * Retourne un barème constant par tranche dont les valeurs sont translatés du facteur taux.
+     * @param taux  le taux de dilatation des valeurs
+     * @param typeArrondi  L'arrondi appliqué sur chacune des valeurs après application du taux
+     * @return le barème dont les valeurs sont translatées (les tranches sont quant à elles inchangées).
+     */
 	public BaremeConstantParTranche homothetieValeur(BigDecimal taux, TypeArrondi typeArrondi) {
 		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
 		for (TrancheBareme tranche : getTranches()) {

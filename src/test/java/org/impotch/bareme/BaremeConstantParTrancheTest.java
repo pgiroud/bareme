@@ -18,6 +18,8 @@ package org.impotch.bareme;
 
 import java.math.BigDecimal;
 
+import org.impotch.util.BigDecimalUtil;
+import org.impotch.util.TypeArrondi;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,6 +60,39 @@ public class BaremeConstantParTrancheTest {
         assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
         assertThat(bareme.calcul(BigDecimal.valueOf(1500))).isEqualTo("2");
         assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualTo("3");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2001))).isEqualTo("3");
+        assertThat(bareme.calcul(BigDecimal.valueOf(10000))).isEqualTo("3");
+    }
+
+    @Test
+    public void homothetieTranchesDe110PourCent() {
+        BaremeConstantParTranche homothetique = bareme.homothetieTranche(BigDecimalUtil.parseTaux("110 %"), TypeArrondi.FRANC);
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1000))).isEqualTo("1");
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1001))).isEqualTo("1");
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1100))).isEqualTo("1");
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1101))).isEqualTo("2");
+    }
+
+    @Test
+    public void momothetieValeursDe120PourCent() {
+        BaremeConstantParTranche homothetique = bareme.homothetieValeur(BigDecimalUtil.parseTaux("120 %"), TypeArrondi.CINQ_CTS);
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1000))).isEqualTo("1.20");
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1001))).isEqualTo("2.40");
+        assertThat(homothetique.calcul(BigDecimal.valueOf(1500))).isEqualTo("2.40");
+    }
+
+    @Test
+    public void seuil() {
+        BaremeConstantParTranche bareme = new BaremeConstantParTranche(new BigDecimal("1.5"));
+        bareme.ajouterTranche(1000, 1);
+        bareme.ajouterTranche(2000, 2);
+        bareme.ajouterDerniereTranche(3);
+
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo("0");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo("0");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(1500))).isEqualTo("2");
+        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualTo("2");
         assertThat(bareme.calcul(BigDecimal.valueOf(2001))).isEqualTo("3");
         assertThat(bareme.calcul(BigDecimal.valueOf(10000))).isEqualTo("3");
     }
