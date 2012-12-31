@@ -23,7 +23,11 @@ import org.impotch.util.math.integration.MethodeIntegration;
 import org.impotch.util.math.integration.Primitivable;
 
 /**
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * Les barèmes à taux marginal intégrable sont ceux pour lesquels on connaît la primitive du taux marginal.
+ * C'est le cas par exemple du barème genevois pour personne seule entre 2001 et 2009.
+ * Pour les barèmes dont les taux marginaux sont constants par tranche, on préférera utiliser la classe
+ * @link org.impotch.bareme.BaremeTauxMarginalConstantParTranche
+ * @author Patrick Giroud
  *
  */
 public class BaremeTauxMarginalIntegrable implements Bareme {
@@ -31,17 +35,28 @@ public class BaremeTauxMarginalIntegrable implements Bareme {
 	private Primitivable tauxMarginal;
 	private final MethodeIntegration methode = new IntegrationExacte();
 	private TypeArrondi typeArrondi = TypeArrondi.CINQ_CTS;
-	
+
+    /**
+     * On précise ici une fonction "taux marginal" qui est intégrable c.-à-d. dont on connaît une primitive.
+     * @param tauxMarginal la fonction intégrable.
+     */
 	public void setTauxMarginal(Primitivable tauxMarginal) {
 		this.tauxMarginal = tauxMarginal;
 	}
 
+    /**
+     * Précise le type d'arrondi désiré en fin de calcul.
+     * Par défaut, l'arrondi est fait aux 5 centimes les plus proches.
+     * @param typeArrondi Le type d'arrondi désiré.
+     */
 	public void setTypeArrondi(TypeArrondi typeArrondi) {
 		this.typeArrondi = typeArrondi;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.impotch.afc.calcul.bareme.Bareme#calcul(java.math.BigDecimal)
+	/**
+     * Le barème étant intégrable, le calcul consiste simplement à intégrer le taux entre 0 et l'assiette.
+     * Le résultat est arrondi (voir #setTypeArrondi(org.impotch.util.TypeArrondi)).
+	 * @see org.impotch.bareme.Bareme#calcul(java.math.BigDecimal)
 	 */
 	@Override
 	public BigDecimal calcul(BigDecimal pAssiette) {

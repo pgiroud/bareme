@@ -22,7 +22,10 @@ import java.util.List;
 import org.impotch.util.TypeArrondi;
 
 /**
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * Un barème par tranche est une fonction en escalier c.-à-d. qu'elle est constante
+ * sur des intervalles et les intervalles forment une partition de l'ensemble des nombres
+ * réels positifs.
+ * @author Patrick Giroud
  *
  */
 public class BaremeConstantParTranche extends BaremeParTranche {

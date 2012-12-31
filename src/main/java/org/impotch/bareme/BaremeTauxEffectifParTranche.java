@@ -30,8 +30,10 @@ public abstract class BaremeTauxEffectifParTranche extends BaremeParTranche impl
     /******************* Méthodes *********************/
     /**************************************************/
 
-	/* (non-Javadoc)
-	 * @see org.impotch.afc.calcul.impot.bareme.Bareme#calculSansSeuil(java.math.BigDecimal)
+	/**
+     * Le calcul consiste simplement à multiplier le taux effectif par l'assiette
+     * et à effectuer l'arrondi.
+	 * @see org.impotch.bareme.BaremeParTranche#calculSansSeuil(java.math.BigDecimal)
 	 */
 	@Override
 	public BigDecimal calculSansSeuil(BigDecimal assiette) {

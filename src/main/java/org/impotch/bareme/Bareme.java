@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 /**
  * Un barème est une fonction mathématique qui en fonction d'un montant retourne un montant.
  * 
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 public interface Bareme {
@@ -28,7 +28,7 @@ public interface Bareme {
 	/**
 	 * Calcule le montant par application du barème.
 	 * @param pAssiette L'assiette fiscale
-	 * @return le montant calculé.
+	 * @return le montant calculé qui est en général arrondi.
 	 */
 	BigDecimal calcul(BigDecimal pAssiette);
 	

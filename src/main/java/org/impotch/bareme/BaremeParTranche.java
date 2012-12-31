@@ -23,11 +23,11 @@ import org.impotch.util.BigDecimalUtil;
 import org.impotch.util.TypeArrondi;
 
 /**
- * Un barème par tranche est une fonction en escalier c.-à-d. qu'elle est constante
- * sur des intervalles et les intervalles forment une partition de l'ensemble des nombres
- * réels positifs.
+ * Un barème par tranche est une fonction définie sur des tranches c.-à-d. sur des intervalles
+ * formant une partition de l'ensemble des nombres réels positifs.
+ * En général, la fonction est soit constante soit linéaire sur les tranches.
  *  
- * @author <a href="mailto:patrick.giroud@etat.impotch.org">Patrick Giroud</a>
+ * @author Patrick Giroud
  *
  */
 abstract class BaremeParTranche implements Bareme {
@@ -62,13 +62,17 @@ abstract class BaremeParTranche implements Bareme {
 	}
 
 	/**
-	 * @param seuil the seuil to set
+     * Indique un seuil en dessous duquel l'impôt sera égal à 0.
+     * Par exemple, à l'IFD, il existe un seuil à 25 CHF c.-à-d. qu'on ne
+     * peut pas avoir à payer 10 CHF d'impôt.
+	 * @param seuil Le seuil (25 CHF pour l'IFD par exemple)
 	 */
 	protected void setSeuil(BigDecimal seuil) {
 		this.seuil = seuil;
 	}
 
 	/**
+     * Retournes les tranches du barème.
 	 * @return the tranches
 	 */
 	protected List<TrancheBareme> getTranches() {
@@ -110,8 +114,11 @@ abstract class BaremeParTranche implements Bareme {
 		getTranches().add(new TrancheBareme.DerniereTrancheBareme(montant));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.impotch.afc.calcul.impot.bareme.Bareme#calcul(java.math.BigDecimal)
+	/**
+     * Le calcul est d'abord fait en invoquant #calculSansSeuil(java.math.BigDecimal)
+     * puis, si le seuil est défini (voir #setSeuil(java.math.BigDecimal)), on applique le
+     * seuillage.
+	 * @see org.impotch.bareme.Bareme#calcul(java.math.BigDecimal)
 	 */
 	@Override
 	public BigDecimal calcul(BigDecimal assiette) {
