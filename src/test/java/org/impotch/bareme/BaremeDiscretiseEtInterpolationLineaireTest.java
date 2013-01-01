@@ -29,13 +29,14 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
 
 	private final static BigDecimal MILLE = BigDecimal.valueOf(1000);
 	private final static BigDecimal CENT = BigDecimal.valueOf(100);
+    private final static Point ORIGINE = new Point(BigDecimal.ZERO,BigDecimal.ZERO);
 	
 	
 	@Test
 	public void uneSeuleTranche() {
 		BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
 		bareme.setTypeArrondi(TypeArrondi.FRANC);
-		bareme.ajouterPointDiscretisation(BigDecimal.ZERO,BigDecimal.ZERO);
+		bareme.ajouterPointDiscretisation(ORIGINE);
 		bareme.ajouterPointDiscretisation(MILLE, MILLE);
 		bareme.setDefiniAvantBorneInf(true);
 		bareme.setDefiniApresBorneSup(true);
@@ -79,5 +80,13 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
 		bareme.calcul(new BigDecimal(-1));
         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
     }
-	
+
+    @Test
+    public void pointDiscretiseNonOrdonne() {
+        BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
+        bareme.setTypeArrondi(TypeArrondi.FRANC);
+        bareme.ajouterPointDiscretisation(MILLE, CENT);
+        bareme.ajouterPointDiscretisation(ORIGINE);
+        assertThat(bareme.calcul(CENT)).isEqualTo(BigDecimal.valueOf(10));
+    }
 }
