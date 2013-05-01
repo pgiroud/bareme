@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>org.impotch</groupId>
   <artifactId>bareme</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -76,6 +76,31 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.9.0</version>
+        <configuration>
+          <!-- Template location -->
+          <header>licence-header.txt</header>
+          <properties>
+            <!-- Values to be substituted in template -->
+            <projectName>impotch/bareme</projectName>
+          </properties>
+          <strictCheck>true</strictCheck>
+          <includes>
+            <include>src/**</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>format</goal>
             </goals>
           </execution>
         </executions>
