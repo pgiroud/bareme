@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import org.impotch.util.TypeArrondi;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 public class TrancheBaremeTest {
 
 	@Test
