@@ -23,6 +23,7 @@ import org.impotch.util.TypeArrondi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.impotch.bareme.BaremeAssert.*;
 
 public class BaremeTauxEffectifConstantParTrancheTest {
 
@@ -65,5 +66,37 @@ public class BaremeTauxEffectifConstantParTrancheTest {
         assertThat(bareme.calcul(BigDecimal.valueOf(2001))).isEqualTo("60");
         assertThat(bareme.calcul(new BigDecimal("1000000000000000"))).isEqualTo("30000000000000");
 
+    }
+
+    @Test
+    public void comparaisonBareme() {
+        BaremeTauxEffectifConstantParTranche bareme1 = new BaremeTauxEffectifConstantParTranche();
+        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+        bareme1.ajouterDerniereTranche("10 %");
+
+        BaremeTauxEffectifConstantParTranche bareme2 = new BaremeTauxEffectifConstantParTranche();
+        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+        bareme2.ajouterDerniereTranche("10 %");
+
+        BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
+
+        bareme1 = new BaremeTauxEffectifConstantParTranche();
+        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+        bareme1.ajouterTranche(1000,"5 %");
+        bareme1.ajouterDerniereTranche("10 %");
+
+        bareme2 = new BaremeTauxEffectifConstantParTranche();
+        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+        bareme2.ajouterTranche(1000,"5 %");
+        bareme2.ajouterDerniereTranche("10 %");
+
+        BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
+
+        bareme2 = new BaremeTauxEffectifConstantParTranche();
+        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+        bareme2.ajouterTranche(1000,"6 %");
+        bareme2.ajouterDerniereTranche("10 %");
+
+        BaremeAssert.assertThat(bareme1).tolerance("1 %").isEqualTo(bareme2);
     }
 }
