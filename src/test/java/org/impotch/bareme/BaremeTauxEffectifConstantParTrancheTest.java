@@ -21,9 +21,8 @@ import org.junit.Test;
 
 import org.impotch.util.TypeArrondi;
 
+import static org.impotch.bareme.BaremeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.impotch.bareme.BaremeAssert.*;
 
 public class BaremeTauxEffectifConstantParTrancheTest {
 
@@ -78,7 +77,7 @@ public class BaremeTauxEffectifConstantParTrancheTest {
         bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
         bareme2.ajouterDerniereTranche("10 %");
 
-        BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
+        assertThat(bareme1).isEqualTo(bareme2);
 
         bareme1 = new BaremeTauxEffectifConstantParTranche();
         bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
@@ -90,13 +89,13 @@ public class BaremeTauxEffectifConstantParTrancheTest {
         bareme2.ajouterTranche(1000,"5 %");
         bareme2.ajouterDerniereTranche("10 %");
 
-        BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
+        assertThat(bareme1).isEqualTo(bareme2);
 
         bareme2 = new BaremeTauxEffectifConstantParTranche();
         bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
         bareme2.ajouterTranche(1000,"6 %");
         bareme2.ajouterDerniereTranche("10 %");
 
-        BaremeAssert.assertThat(bareme1).tolerance("1 %").isEqualTo(bareme2);
+        assertThat(bareme1).tolerance("1 %").isEqualTo(bareme2);
     }
 }
