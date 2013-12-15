@@ -78,7 +78,7 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
             BigDecimal ordonnee = tranche.getTauxOuMontant();
             BigDecimal ordonneeAttendue = trancheAttendue.getTauxOuMontant();
             BigDecimalAssert assertion = Assertions.assertThat(ordonnee)
-                    .overridingErrorMessage("Sur la tranche %1$d, ordonnée attendue %2$s mais est %3$s", i, ordonneeAttendue, ordonnee);
+                    .overridingErrorMessage("Sur la tranche %1$d, dont l'abscisse est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, abscisse ,ordonneeAttendue, ordonnee);
             if (null != offset) {
                 assertion = assertion.usingComparator(bigDecimalComparator);
             }
