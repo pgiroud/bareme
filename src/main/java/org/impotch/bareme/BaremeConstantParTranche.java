@@ -16,10 +16,9 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.impotch.util.TypeArrondi;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Un barème par tranche est une fonction en escalier c.-à-d. qu'elle est constante
@@ -69,13 +68,9 @@ public class BaremeConstantParTranche extends BaremeParTranche {
      * @return le barème dont les tranches sont translatées (les valeurs sont quant à elles inchangées).
      */
 	public BaremeConstantParTranche homothetieTranche(BigDecimal taux, TypeArrondi typeArrondi) {
-		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
-		for (TrancheBareme tranche : getTranches()) {
-			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
-		}
 		BaremeConstantParTranche bareme = new BaremeConstantParTranche();
 		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
-		bareme.setTranches(tranchesHomothetiques);
+		bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetie(taux,typeArrondi)).collect(toList()));
 		return bareme;
 	}
 
@@ -86,13 +81,9 @@ public class BaremeConstantParTranche extends BaremeParTranche {
      * @return le barème dont les valeurs sont translatées (les tranches sont quant à elles inchangées).
      */
 	public BaremeConstantParTranche homothetieValeur(BigDecimal taux, TypeArrondi typeArrondi) {
-		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
-		for (TrancheBareme tranche : getTranches()) {
-			tranchesHomothetiques.add(tranche.homothetieValeur(taux,typeArrondi));
-		}
 		BaremeConstantParTranche bareme = new BaremeConstantParTranche();
 		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
-		bareme.setTranches(tranchesHomothetiques);
+        bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetieValeur(taux,typeArrondi)).collect(toList()));
 		return bareme;
 	}
 	

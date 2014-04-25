@@ -29,7 +29,7 @@
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <compileSource>1.6</compileSource>
+    <compileSource>1.8</compileSource>
   </properties>
 
   <!-- Build Settings -->

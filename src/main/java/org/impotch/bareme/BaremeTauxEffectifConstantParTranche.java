@@ -22,6 +22,7 @@ import java.util.List;
 import org.impotch.util.BigDecimalUtil;
 import org.impotch.util.HashCodeBuilder;
 import org.impotch.util.TypeArrondi;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Barème à taux effectif défini par tranche et dont le taux est constant sur chacune des tranches.
@@ -54,13 +55,9 @@ public final class BaremeTauxEffectifConstantParTranche extends
 	}
 	
 	public BaremeTauxEffectifConstantParTranche homothetie(BigDecimal taux, TypeArrondi typeArrondi) {
-		List<TrancheBareme> tranchesHomothetiques = new ArrayList<TrancheBareme>();
-		for (TrancheBareme tranche : getTranches()) {
-			tranchesHomothetiques.add(tranche.homothetie(taux,typeArrondi));
-		}
 		BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
 		bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
-		bareme.setTranches(tranchesHomothetiques);
+        bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetie(taux,typeArrondi)).collect(toList()));
 		return bareme;
 	}
 	
@@ -89,11 +86,10 @@ public final class BaremeTauxEffectifConstantParTranche extends
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BaremeTauxEffectifConstantParTranche)) return false;
 		BaremeTauxEffectifConstantParTranche bareme = (BaremeTauxEffectifConstantParTranche)obj;
-		if (this.montantMaxNonInclus != bareme.montantMaxNonInclus) return false;
-		if (!this.getTypeArrondiSurChaqueTranche().equals(bareme.getTypeArrondiSurChaqueTranche())) return false;
-		if (0 != BigDecimalUtil.nullSafeCompare(this.getSeuil(), bareme.getSeuil())) return false;
-		if (!this.getTranches().equals(bareme.getTranches())) return false;
-		return true;
+        return this.montantMaxNonInclus==bareme.montantMaxNonInclus
+                && this.getTypeArrondiSurChaqueTranche().equals(bareme.getTypeArrondiSurChaqueTranche())
+                && 0==BigDecimalUtil.nullSafeCompare(this.getSeuil(), bareme.getSeuil())
+                && this.getTranches().equals(bareme.getTranches());
 	}
 
 	@Override
@@ -103,6 +99,6 @@ public final class BaremeTauxEffectifConstantParTranche extends
 	}
 
 	public List<TrancheBareme> obtenirTranches() {
-		return new ArrayList<TrancheBareme>(getTranches()); 
+		return new ArrayList<>(getTranches());
 	}
 }
