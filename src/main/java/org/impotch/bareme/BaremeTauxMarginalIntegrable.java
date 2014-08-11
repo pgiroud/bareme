@@ -25,8 +25,7 @@ import org.impotch.util.math.integration.Primitivable;
 /**
  * Les barèmes à taux marginal intégrable sont ceux pour lesquels on connaît la primitive du taux marginal.
  * C'est le cas par exemple du barème genevois pour personne seule entre 2001 et 2009.
- * Pour les barèmes dont les taux marginaux sont constants par tranche, on préférera utiliser la classe
- * @link org.impotch.bareme.BaremeTauxMarginalConstantParTranche
+ * Pour les barèmes dont les taux marginaux sont constants par tranche, on préférera utiliser la classe @link org.impotch.bareme.BaremeTauxMarginalConstantParTranche
  * @author Patrick Giroud
  *
  */
