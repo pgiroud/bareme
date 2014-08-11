@@ -137,8 +137,16 @@ public class TrancheBareme {
 		public TrancheBareme homothetie(BigDecimal pRapport, TypeArrondi typeArrondi) {
 			return this;
 		}
-		
-		@Override
+
+        @Override
+        public TrancheBareme homothetieValeur(BigDecimal pRapport, TypeArrondi typeArrondi) {
+            if (!BigDecimalUtil.isStrictementPositif(pRapport)) throw new IllegalArgumentException("Le rapport d'homothétie '" + pRapport + "' ne peut pas être négatif ou null !!");
+            BigDecimal inter = this.getTauxOuMontant().multiply(pRapport);
+            BigDecimal tauxOuMontant = typeArrondi.arrondirMontant(inter);
+            return new DerniereTrancheBareme(tauxOuMontant);
+        }
+
+        @Override
 		public String toString() {
 			return "+\u221E " + getTauxOuMontant();
 		}
