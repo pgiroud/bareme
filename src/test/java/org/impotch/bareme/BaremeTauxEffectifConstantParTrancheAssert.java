@@ -17,15 +17,13 @@ package org.impotch.bareme;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.BigDecimalAssert;
-import org.assertj.core.data.Offset;
+import org.assertj.core.api.AbstractBigDecimalAssert;
 import org.impotch.util.BigDecimalUtil;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -77,7 +75,7 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
             // Comparaison des ordonnées
             BigDecimal ordonnee = tranche.getTauxOuMontant();
             BigDecimal ordonneeAttendue = trancheAttendue.getTauxOuMontant();
-            BigDecimalAssert assertion = Assertions.assertThat(ordonnee)
+            AbstractBigDecimalAssert assertion = Assertions.assertThat(ordonnee)
                     .overridingErrorMessage("Sur la tranche %1$d, dont l'abscisse est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, abscisse ,ordonneeAttendue, ordonnee);
             if (null != offset) {
                 assertion = assertion.usingComparator(bigDecimalComparator);
