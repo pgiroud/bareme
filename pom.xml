@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>org.impotch</groupId>
   <artifactId>bareme</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -29,9 +29,9 @@
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <compileSource>1.6</compileSource>
+    <compileSource>1.8</compileSource>
     <junit.version>4.12</junit.version>
-    <assertj.version>3.0.0</assertj.version>
+    <assertj.version>3.2.0</assertj.version>
   </properties>
 
   <!-- Build Settings -->
@@ -47,7 +47,7 @@
           <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
       </plugin>
-      <!--plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.4</version>
@@ -58,7 +58,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin-->
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
