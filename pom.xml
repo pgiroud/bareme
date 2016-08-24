@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>org.impotch</groupId>
   <artifactId>bareme</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -24,14 +24,14 @@
     <dependency>
       <groupId>org.impotch</groupId>
       <artifactId>util</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5</version>
     </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compileSource>1.8</compileSource>
     <junit.version>4.12</junit.version>
-    <assertj.version>3.2.0</assertj.version>
+    <assertj.version>3.5.2</assertj.version>
   </properties>
 
   <!-- Build Settings -->
