@@ -1,5 +1,20 @@
 /**
  * This file is part of impotch/bareme.
+ *
+ * impotch/bareme is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * impotch/bareme is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * This file is part of impotch/bareme.
  * <p>
  * impotch/bareme is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +33,7 @@ package org.impotch.bareme;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.impotch.util.BigDecimalUtil;
 import org.impotch.util.TypeArrondi;
@@ -30,7 +46,7 @@ import org.impotch.util.TypeArrondi;
  * @author Patrick Giroud
  *
  */
-abstract class BaremeParTranche implements Bareme {
+public abstract class BaremeParTranche implements Bareme {
 
     /**************************************************/
     /****************** Attributs *********************/
@@ -40,7 +56,6 @@ abstract class BaremeParTranche implements Bareme {
     private TypeArrondi typeArrondiSurChaqueTranche;
     private TypeArrondi typeArrondiGlobal;
     private BigDecimal seuil;
-    protected boolean montantMaxNonInclus;
 
 
     /**************************************************/
@@ -50,7 +65,7 @@ abstract class BaremeParTranche implements Bareme {
     /**
      * @param tranches the tranches to set
      */
-    public void setTranches(List<TrancheBareme> tranches) {
+    protected void setTranches(List<TrancheBareme> tranches) {
         this.tranches = tranches;
     }
 
@@ -90,10 +105,6 @@ abstract class BaremeParTranche implements Bareme {
         return seuil;
     }
 
-    public void setMontantMaxNonInclus() {
-        montantMaxNonInclus = true;
-    }
-
     protected TypeArrondi getTypeArrondiGlobal() {
         return typeArrondiGlobal;
     }
@@ -106,13 +117,6 @@ abstract class BaremeParTranche implements Bareme {
     /******************* Méthodes *********************/
     /**************************************************/
 
-    public void ajouterTranche(BigDecimal montantImposable, BigDecimal montant) {
-        getTranches().add(new TrancheBareme(montantImposable, montant));
-    }
-
-    public void ajouterDerniereTranche(BigDecimal montant) {
-        getTranches().add(new TrancheBareme.DerniereTrancheBareme(montant));
-    }
 
     /**
      * Le calcul est d'abord fait en invoquant #calculSansSeuil(java.math.BigDecimal)
@@ -134,5 +138,16 @@ abstract class BaremeParTranche implements Bareme {
      */
     protected abstract BigDecimal calculSansSeuil(BigDecimal assiette);
 
+    protected abstract BaremeParTranche newBaremeParTranche();
 
+    public BaremeParTranche homothetie(BigDecimal taux, TypeArrondi typeArrondi) {
+        BaremeParTranche bareme = newBaremeParTranche();
+        bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
+        bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetie(taux, typeArrondi)).collect(Collectors.toList()));
+        return bareme;
+    }
+
+    public BaremeParTranche homothetieValeur(BigDecimal taux, TypeArrondi typeArrondi) {
+        throw new RuntimeException();
+    }
 }

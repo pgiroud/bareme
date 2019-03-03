@@ -1,5 +1,20 @@
 /**
  * This file is part of impotch/bareme.
+ *
+ * impotch/bareme is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * impotch/bareme is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * This file is part of impotch/bareme.
  * <p>
  * impotch/bareme is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,17 +81,17 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
         int i = 0;
         for (TrancheBareme trancheAttendue : expected.obtenirTranches()) {
             TrancheBareme tranche = tranches.get(i);
-            // Comparaison des abscisses
-            BigDecimal abscisse = tranche.getMontantMaxTranche();
-            BigDecimal abscisseAttendue = trancheAttendue.getMontantMaxTranche();
-            Assertions.assertThat(abscisse)
-                    .overridingErrorMessage("Sur la tranche %1$d, abscisse attendue %2$s mais est %3$s", i, abscisseAttendue, abscisse)
-                    .isEqualTo(abscisseAttendue);
+            // Comparaison des intervalles
+            Intervalle intervalle = tranche.getIntervalle();
+            Intervalle intervalleAttendu = trancheAttendue.getIntervalle();
+            Assertions.assertThat(intervalle)
+                    .overridingErrorMessage("Sur la tranche %1$d, abscisse attendue %2$s mais est %3$s", i, intervalleAttendu, intervalle)
+                    .isEqualTo(intervalleAttendu);
             // Comparaison des ordonnées
             BigDecimal ordonnee = tranche.getTauxOuMontant();
             BigDecimal ordonneeAttendue = trancheAttendue.getTauxOuMontant();
             AbstractBigDecimalAssert assertion = Assertions.assertThat(ordonnee)
-                    .overridingErrorMessage("Sur la tranche %1$d, dont l'abscisse est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, abscisse, ordonneeAttendue, ordonnee);
+                    .overridingErrorMessage("Sur la tranche %1$d, dont l'intervalle est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, intervalle, ordonneeAttendue, ordonnee);
             if (null != offset) {
                 assertion = assertion.usingComparator(bigDecimalComparator);
             }

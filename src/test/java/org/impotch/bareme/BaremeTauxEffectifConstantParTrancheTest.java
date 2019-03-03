@@ -1,5 +1,20 @@
 /**
  * This file is part of impotch/bareme.
+ *
+ * impotch/bareme is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * impotch/bareme is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * This file is part of impotch/bareme.
  * <p>
  * impotch/bareme is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +47,12 @@ public class BaremeTauxEffectifConstantParTrancheTest {
 
     @Test
     public void uneSeuleTranche() {
-        BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
-        bareme.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme.ajouterDerniereTranche("10 %");
+        ConstructeurBareme constructeur = new ConstructeurBareme()
+            .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+            .derniereTranche("10 %");
+
+
+        Bareme bareme = constructeur.construireBaremeTauxEffectif();
 
         assertThat(bareme.calcul(MILLE)).isEqualTo(CENT);
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-100");
@@ -45,11 +63,13 @@ public class BaremeTauxEffectifConstantParTrancheTest {
 
     @Test
     public void plusieursTranches() {
-        BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
-        bareme.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme.ajouterTranche(1000, "1 %");
-        bareme.ajouterTranche(2000, "2 %");
-        bareme.ajouterDerniereTranche("3 %");
+        ConstructeurBareme constructeur = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .tranche(1000, "1 %")
+                .tranche(2000, "2 %")
+                .derniereTranche("3 %");
+
+        Bareme bareme = constructeur.construireBaremeTauxEffectif();
 
         // 1 %
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-10");
@@ -68,34 +88,56 @@ public class BaremeTauxEffectifConstantParTrancheTest {
     }
 
     @Test
-    public void comparaisonBareme() {
-        BaremeTauxEffectifConstantParTranche bareme1 = new BaremeTauxEffectifConstantParTranche();
-        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme1.ajouterDerniereTranche("10 %");
+    public void optimisation() {
+        ConstructeurBareme constructeur = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .tranche(1000, "1 %")
+                .tranche(2000, "1 %")
+                .derniereTranche("2 %");
 
-        BaremeTauxEffectifConstantParTranche bareme2 = new BaremeTauxEffectifConstantParTranche();
-        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme2.ajouterDerniereTranche("10 %");
 
-        assertThat(bareme1).isEqualTo(bareme2);
+        Bareme bareme = constructeur.construireBaremeTauxEffectif();
 
-        bareme1 = new BaremeTauxEffectifConstantParTranche();
-        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme1.ajouterTranche(1000, "5 %");
-        bareme1.ajouterDerniereTranche("10 %");
+        constructeur = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .tranche(2000, "1 %")
+                .derniereTranche("2 %");
+        Bareme baremeOptimise = constructeur.construireBaremeTauxEffectif();
 
-        bareme2 = new BaremeTauxEffectifConstantParTranche();
-        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme2.ajouterTranche(1000, "5 %");
-        bareme2.ajouterDerniereTranche("10 %");
-
-        assertThat(bareme1).isEqualTo(bareme2);
-
-        bareme2 = new BaremeTauxEffectifConstantParTranche();
-        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
-        bareme2.ajouterTranche(1000, "6 %");
-        bareme2.ajouterDerniereTranche("10 %");
-
-        assertThat(bareme1).tolerance("1 %").isEqualTo(bareme2);
+        assertThat(bareme).isEqualTo(baremeOptimise);
     }
+
+
+//    @Test
+//    public void comparaisonBareme() {
+//
+//        BaremeTauxEffectifConstantParTranche bareme1 = new BaremeTauxEffectifConstantParTranche();
+//        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+//        bareme1.ajouterDerniereTranche("10 %");
+//
+//        BaremeTauxEffectifConstantParTranche bareme2 = new BaremeTauxEffectifConstantParTranche();
+//        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+//        bareme2.ajouterDerniereTranche("10 %");
+//
+//        assertThat(bareme1).isEqualTo(bareme2);
+//
+//        bareme1 = new BaremeTauxEffectifConstantParTranche();
+//        bareme1.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+//        bareme1.ajouterTranche(1000, "5 %");
+//        bareme1.ajouterDerniereTranche("10 %");
+//
+//        bareme2 = new BaremeTauxEffectifConstantParTranche();
+//        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+//        bareme2.ajouterTranche(1000, "5 %");
+//        bareme2.ajouterDerniereTranche("10 %");
+//
+//        assertThat(bareme1).isEqualTo(bareme2);
+//
+//        bareme2 = new BaremeTauxEffectifConstantParTranche();
+//        bareme2.setTypeArrondiSurChaqueTranche(TypeArrondi.FRANC);
+//        bareme2.ajouterTranche(1000, "6 %");
+//        bareme2.ajouterDerniereTranche("10 %");
+//
+//        assertThat(bareme1).tolerance("1 %").isEqualTo(bareme2);
+//    }
 }

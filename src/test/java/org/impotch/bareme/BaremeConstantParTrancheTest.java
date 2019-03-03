@@ -1,5 +1,20 @@
 /**
  * This file is part of impotch/bareme.
+ *
+ * impotch/bareme is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * impotch/bareme is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * This file is part of impotch/bareme.
  * <p>
  * impotch/bareme is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,18 +42,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaremeConstantParTrancheTest {
 
-    private BaremeConstantParTranche bareme;
+    private ConstructeurBareme constructeur;
 
     @Before
     public void setUp() throws Exception {
-        bareme = new BaremeConstantParTranche();
-        bareme.ajouterTranche(1000, 1);
-        bareme.ajouterTranche(2000, 2);
-        bareme.ajouterDerniereTranche(3);
+        constructeur = new ConstructeurBareme()
+                .tranche(1000,1)
+                .tranche(2000,2)
+                .derniereTranche(3);
     }
 
     @Test
     public void baremeSimple() {
+        BaremeParTranche bareme = constructeur.construireBaremeParTranche();
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("1");
         assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo("1");
         assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
@@ -50,11 +66,11 @@ public class BaremeConstantParTrancheTest {
 
     @Test
     public void baremeFermeAGauche() {
-        BaremeConstantParTranche bareme = new BaremeConstantParTranche();
-        bareme.setMontantMaxNonInclus();
-        bareme.ajouterTranche(1000, 1);
-        bareme.ajouterTranche(2000, 2);
-        bareme.ajouterDerniereTranche(3);
+        ConstructeurBareme cons = new ConstructeurBareme().fermeAGauche()
+                .tranche(1000,1)
+                .tranche(2000,2)
+                .derniereTranche(3);
+        BaremeParTranche bareme = cons.construireBaremeParTranche();
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("1");
         assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo("2");
         assertThat(bareme.calcul(BigDecimal.valueOf(1001))).isEqualTo("2");
@@ -66,7 +82,8 @@ public class BaremeConstantParTrancheTest {
 
     @Test
     public void homothetieTranchesDe110PourCent() {
-        BaremeConstantParTranche homothetique = bareme.homothetieTranche(BigDecimalUtil.parseTaux("110 %"), TypeArrondi.FRANC);
+        BaremeParTranche homothetique = constructeur.construireBaremeParTranche()
+                .homothetie(BigDecimalUtil.parseTaux("110 %"), TypeArrondi.FRANC);
         assertThat(homothetique.calcul(BigDecimal.valueOf(1000))).isEqualTo("1");
         assertThat(homothetique.calcul(BigDecimal.valueOf(1001))).isEqualTo("1");
         assertThat(homothetique.calcul(BigDecimal.valueOf(1100))).isEqualTo("1");
@@ -74,8 +91,9 @@ public class BaremeConstantParTrancheTest {
     }
 
     @Test
-    public void momothetieValeursDe120PourCent() {
-        BaremeConstantParTranche homothetique = bareme.homothetieValeur(BigDecimalUtil.parseTaux("120 %"), TypeArrondi.CINQ_CTS);
+    public void homothetieValeursDe120PourCent() {
+        BaremeParTranche homothetique = constructeur.construireBaremeParTranche()
+                .homothetieValeur(BigDecimalUtil.parseTaux("120 %"), TypeArrondi.CINQ_CTS);
         assertThat(homothetique.calcul(BigDecimal.valueOf(1000))).isEqualTo("1.20");
         assertThat(homothetique.calcul(BigDecimal.valueOf(1001))).isEqualTo("2.40");
         assertThat(homothetique.calcul(BigDecimal.valueOf(1500))).isEqualTo("2.40");
@@ -83,10 +101,8 @@ public class BaremeConstantParTrancheTest {
 
     @Test
     public void seuil() {
-        BaremeConstantParTranche bareme = new BaremeConstantParTranche(new BigDecimal("1.5"));
-        bareme.ajouterTranche(1000, 1);
-        bareme.ajouterTranche(2000, 2);
-        bareme.ajouterDerniereTranche(3);
+        constructeur.seuil(new BigDecimal("1.5"));
+        BaremeParTranche bareme = constructeur.construireBaremeParTranche();
 
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo("0");
         assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo("0");
