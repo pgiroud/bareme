@@ -143,6 +143,7 @@ public abstract class BaremeParTranche implements Bareme {
     public BaremeParTranche homothetie(BigDecimal taux, TypeArrondi typeArrondi) {
         BaremeParTranche bareme = newBaremeParTranche();
         bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
+        bareme.setTypeArrondiGlobal(this.typeArrondiGlobal);
         bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetie(taux, typeArrondi)).collect(Collectors.toList()));
         return bareme;
     }

@@ -52,7 +52,7 @@ public class BaremeTauxEffectifConstantParTrancheTest {
             .derniereTranche("10 %");
 
 
-        Bareme bareme = constructeur.construireBaremeTauxEffectif();
+        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
 
         assertThat(bareme.calcul(MILLE)).isEqualTo(CENT);
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-100");
@@ -69,7 +69,7 @@ public class BaremeTauxEffectifConstantParTrancheTest {
                 .tranche(2000, "2 %")
                 .derniereTranche("3 %");
 
-        Bareme bareme = constructeur.construireBaremeTauxEffectif();
+        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
 
         // 1 %
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-10");
@@ -96,13 +96,13 @@ public class BaremeTauxEffectifConstantParTrancheTest {
                 .derniereTranche("2 %");
 
 
-        Bareme bareme = constructeur.construireBaremeTauxEffectif();
+        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
 
         constructeur = new ConstructeurBareme()
                 .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
                 .tranche(2000, "1 %")
                 .derniereTranche("2 %");
-        Bareme baremeOptimise = constructeur.construireBaremeTauxEffectif();
+        Bareme baremeOptimise = constructeur.construireBaremeTauxEffectifConstantParTranche();
 
         assertThat(bareme).isEqualTo(baremeOptimise);
     }

@@ -52,4 +52,30 @@ public class BaremeTauxMarginalConstantParTrancheTest {
         // valeur négative : par convention, résultat = 0.
         assertThat(bareme.calcul(BigDecimal.valueOf(-100))).isEqualByComparingTo(BigDecimal.ZERO);
     }
+
+    @Test
+    public void deuxTranche() {
+        ConstructeurBaremeTauxMarginal constructeur = new ConstructeurBaremeTauxMarginal();
+        constructeur.tranche(1000,"5 %");
+        constructeur.derniereTranche("10 %");
+        Bareme bareme = constructeur.construire();
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(bareme.calcul(BigDecimal.valueOf(100))).isEqualByComparingTo(BigDecimal.valueOf(5));
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo(BigDecimal.valueOf(50));
+        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualByComparingTo(BigDecimal.valueOf(150));
+    }
+
+    @Test
+    public void troisTranche() {
+        ConstructeurBaremeTauxMarginal constructeur = new ConstructeurBaremeTauxMarginal();
+        constructeur.tranche(1000, "5 %");
+        constructeur.tranche(2000, "10 %");
+        constructeur.derniereTranche("15 %");
+        Bareme bareme = constructeur.construire();
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(bareme.calcul(BigDecimal.valueOf(100))).isEqualByComparingTo(BigDecimal.valueOf(5));
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo(BigDecimal.valueOf(50));
+        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualByComparingTo(BigDecimal.valueOf(150));
+        assertThat(bareme.calcul(BigDecimal.valueOf(3000))).isEqualByComparingTo(BigDecimal.valueOf(300));
+    }
 }

@@ -36,9 +36,12 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
         typeArrondiSurChaqueTranche(bareme.getTypeArrondiSurChaqueTranche());
     }
 
+
     @Override
     protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
-        return new TrancheBaremeTxMarginal(inter, montantOuTaux);
+        TrancheBaremeTxMarginal tranche = new TrancheBaremeTxMarginal(inter, montantOuTaux);
+        montantMaxPrecedent = inter.getFin();
+        return tranche;
     }
 
     @Override
@@ -71,6 +74,11 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
             } else {
                 montantTranche = null;
             }
+        }
+
+        @Override
+        protected TrancheBareme newTranche(Intervalle intervalle, BigDecimal tauxOuMontant) {
+            return new TrancheBaremeTxMarginal(intervalle, tauxOuMontant);
         }
 
         @Override

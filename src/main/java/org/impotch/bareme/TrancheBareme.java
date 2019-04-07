@@ -78,6 +78,10 @@ public class TrancheBareme {
     /******************* Méthodes *********************/
     /**************************************************/
 
+    protected TrancheBareme newTranche(Intervalle intervalle, BigDecimal tauxOuMontant) {
+        return new TrancheBareme(intervalle,tauxOuMontant);
+    }
+
     /**
      * Une tranche peut être translatée. Translater une tranche consiste à
      * multiplier le montant imposable maximum par le rapport de translation
@@ -89,7 +93,7 @@ public class TrancheBareme {
     public TrancheBareme homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
         if (!BigDecimalUtil.isStrictementPositif(rapport))
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
-        return new TrancheBareme(intervalle.homothetie(rapport,typeArrondi), this.getTauxOuMontant());
+        return newTranche(intervalle.homothetie(rapport,typeArrondi), this.getTauxOuMontant());
     }
 
     public TrancheBareme homothetieValeur(BigDecimal rapport, TypeArrondi typeArrondi) {
@@ -97,7 +101,7 @@ public class TrancheBareme {
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
         BigDecimal inter = this.getTauxOuMontant().multiply(rapport);
         BigDecimal tauxOuMontant = typeArrondi.arrondirMontant(inter);
-        return new TrancheBareme(this.intervalle, tauxOuMontant);
+        return newTranche(this.intervalle, tauxOuMontant);
     }
 
     public BigDecimal calcul(BigDecimal montant) {

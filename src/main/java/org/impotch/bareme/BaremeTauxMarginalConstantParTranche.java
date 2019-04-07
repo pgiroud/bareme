@@ -47,7 +47,9 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 
     @Override
     public BigDecimal calculSansSeuil(BigDecimal assiette) {
-        BigDecimal resultat = getTranches().stream().map(t -> t.calcul(assiette)).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal resultat = getTranches().stream()
+                .map(t -> getTypeArrondiSurChaqueTranche().arrondirMontant(t.calcul(assiette)))
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
         return getTypeArrondiGlobal().arrondirMontant(resultat);
     }
 

@@ -103,25 +103,32 @@ public class ConstructeurBareme {
         return construireTranche(BigDecimal.valueOf(montant),taux);
     }
 
-    protected TrancheBareme construireTranche(BigDecimal montantOuTaux) {
+    protected Intervalle construireDernierIntervalle() {
         Intervalle.Cons cons = new Intervalle.Cons().de(montantMaxPrecedent);
         if (fermeAGauche) {
             cons = cons.inclus();
         } else {
             cons = cons.exclus();
         }
-        Intervalle intervalle = cons.aPlusInfini().intervalle();
-        return new TrancheBareme(intervalle,montantOuTaux);
+        return cons.aPlusInfini().intervalle();
+    }
+
+    protected TrancheBareme construireTranche(BigDecimal montantOuTaux) {
+        return new TrancheBareme(construireDernierIntervalle(),montantOuTaux);
     }
 
     public final ConstructeurBareme tranche(int montant, BigDecimal taux) {
-        Intervalle intervalle = construireIntervalle(BigDecimal.valueOf(montant));
+        return tranche(BigDecimal.valueOf(montant),taux);
+    }
+
+    public final ConstructeurBareme tranche(BigDecimal montant, BigDecimal taux) {
+        Intervalle intervalle = construireIntervalle(montant);
         if (tranches.size() > 0) {
             TrancheBareme derniereTranche = tranches.get(tranches.size()-1);
             if (0 == derniereTranche.getTauxOuMontant().compareTo(taux)) {
                 Intervalle inter = intervalle.union(derniereTranche.getIntervalle());
                 tranches.set(tranches.size()-1,construireTranche(inter,taux));
-                montantMaxPrecedent = BigDecimal.valueOf(montant);
+                montantMaxPrecedent = montant;
             } else {
                 tranches.add(construireTranche(montant,taux));
             }
@@ -146,7 +153,7 @@ public class ConstructeurBareme {
     }
 
     public final ConstructeurBareme derniereTranche(int montant) {
-        return derniereTranche(new BigDecimal(montant));
+        return derniereTranche(BigDecimal.valueOf(montant));
     }
 
     public final ConstructeurBareme derniereTranche(String taux) {
@@ -166,7 +173,7 @@ public class ConstructeurBareme {
         return bareme;
     }
 
-    public BaremeTauxEffectif construireBaremeTauxEffectif() {
+    public BaremeTauxEffectifConstantParTranche construireBaremeTauxEffectifConstantParTranche() {
         BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
         completerBareme(bareme);
         return bareme;
