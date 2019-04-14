@@ -62,6 +62,18 @@ public class ConstructeurBareme {
         return seuil(BigDecimal.valueOf(montant));
     }
 
+    protected TypeArrondi getTypeArrondiSurChaqueTranche() {
+        return typeArrondiSurChaqueTranche;
+    }
+
+    protected TypeArrondi getTypeArrondiGlobal() {
+        return typeArrondiGlobal;
+    }
+
+    protected BigDecimal getSeuil() {
+        return seuil;
+    }
+
     public ConstructeurBareme fermeAGauche() {
         this.fermeAGauche = true;
         return this;
