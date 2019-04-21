@@ -43,21 +43,20 @@ public class BaremeTauxMarginalConstantParTrancheTest {
 
     @Test
     public void uneSeuleTranche() {
-        ConstructeurBaremeTauxMarginal constructeur = new ConstructeurBaremeTauxMarginal();
-        constructeur.derniereTranche("10 %");
-        Bareme bareme = constructeur.construire();
+        Bareme bareme =  new ConstructeurBaremeTauxMarginal()
+            .uniqueTranche("10 %").construire();
+
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(bareme.calcul(BigDecimal.TEN)).isEqualByComparingTo(BigDecimal.ONE);
         assertThat(bareme.calcul(BigDecimal.valueOf(100))).isEqualByComparingTo(BigDecimal.TEN);
-        // valeur négative : par convention, résultat = 0.
-        assertThat(bareme.calcul(BigDecimal.valueOf(-100))).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(bareme.calcul(BigDecimal.valueOf(-100))).isEqualByComparingTo(new BigDecimal("-10.00"));
     }
 
     @Test
     public void deuxTranche() {
         ConstructeurBaremeTauxMarginal constructeur = new ConstructeurBaremeTauxMarginal();
-        constructeur.tranche(1000,"5 %");
-        constructeur.derniereTranche("10 %");
+        constructeur.tranche(0,1000,"5 %");
+        constructeur.derniereTranche(1000,"10 %");
         Bareme bareme = constructeur.construire();
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(bareme.calcul(BigDecimal.valueOf(100))).isEqualByComparingTo(BigDecimal.valueOf(5));
@@ -68,9 +67,9 @@ public class BaremeTauxMarginalConstantParTrancheTest {
     @Test
     public void troisTranche() {
         ConstructeurBaremeTauxMarginal constructeur = new ConstructeurBaremeTauxMarginal();
-        constructeur.tranche(1000, "5 %");
-        constructeur.tranche(2000, "10 %");
-        constructeur.derniereTranche("15 %");
+        constructeur.tranche(0,1000, "5 %");
+        constructeur.tranche(1000,2000, "10 %");
+        constructeur.derniereTranche(2000,"15 %");
         Bareme bareme = constructeur.construire();
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(bareme.calcul(BigDecimal.valueOf(100))).isEqualByComparingTo(BigDecimal.valueOf(5));

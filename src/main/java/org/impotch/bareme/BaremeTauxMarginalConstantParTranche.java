@@ -55,11 +55,6 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
 
 
 
-    protected BigDecimal getTauxDerniereTranche() {
-        TrancheBareme derniereTranche = getTranches().get(getTranches().size() - 1);
-        return derniereTranche.getTauxOuMontant();
-    }
-
     @Override
     protected BaremeParTranche newBaremeParTranche() {
         return new BaremeTauxMarginalConstantParTranche();

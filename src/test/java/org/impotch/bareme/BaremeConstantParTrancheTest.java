@@ -47,9 +47,9 @@ public class BaremeConstantParTrancheTest {
     @Before
     public void setUp() throws Exception {
         constructeur = new ConstructeurBareme()
-                .tranche(1000,1)
-                .tranche(2000,2)
-                .derniereTranche(3);
+                .premiereTranche(1000,1)
+                .tranche(1000,2000,2)
+                .derniereTranche(2000,3);
     }
 
     @Test
@@ -67,9 +67,9 @@ public class BaremeConstantParTrancheTest {
     @Test
     public void baremeFermeAGauche() {
         ConstructeurBareme cons = new ConstructeurBareme().fermeAGauche()
-                .tranche(1000,1)
-                .tranche(2000,2)
-                .derniereTranche(3);
+                .premiereTranche(1000,1)
+                .tranche(1000,2000,2)
+                .derniereTranche(2000,3);
         BaremeParTranche bareme = cons.construireBaremeParTranche();
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("1");
         assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo("2");

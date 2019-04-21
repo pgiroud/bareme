@@ -24,7 +24,6 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
 
     public ConstructeurBaremeTauxMarginal() {
         super();
-        this.montantMaxPrecedent = BigDecimal.ZERO;
     }
 
     public ConstructeurBaremeTauxMarginal(List<TrancheBareme> tranches) {
@@ -40,18 +39,76 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
     @Override
     protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
         TrancheBaremeTxMarginal tranche = new TrancheBaremeTxMarginal(inter, montantOuTaux);
-        montantMaxPrecedent = inter.getFin();
         return tranche;
     }
 
     @Override
-    protected TrancheBareme construireTranche(BigDecimal taux) {
-        Intervalle intervalle = new Intervalle.Cons().de(montantMaxPrecedent).aPlusInfini().intervalle();
-        return construireTranche(intervalle,taux);
+    public ConstructeurBaremeTauxMarginal uniqueTranche(String taux) {
+        super.uniqueTranche(taux);
+        return this;
     }
 
+    @Override
+    public ConstructeurBaremeTauxMarginal premiereTranche(BigDecimal jusqua, BigDecimal taux) {
+        super.premiereTranche(jusqua, taux);
+        return this;
+    }
 
-    public Bareme construire() {
+    @Override
+    public ConstructeurBaremeTauxMarginal premiereTranche(int jusqua, String taux) {
+        super.premiereTranche(jusqua, taux);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal premiereTranche(int jusqua, int valeur) {
+        super.premiereTranche(jusqua, valeur);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal tranche(BigDecimal de, BigDecimal a, BigDecimal taux) {
+        super.tranche(de, a, taux);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal tranche(int de, int a, BigDecimal taux) {
+        super.tranche(de, a, taux);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal tranche(int de, int a, String taux) {
+        super.tranche(de, a, taux);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal tranche(int de, int a, int valeur) {
+        super.tranche(de, a, valeur);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal derniereTranche(BigDecimal depuis, BigDecimal taux) {
+        super.derniereTranche(depuis, taux);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal derniereTranche(int depuis, int valeur) {
+        super.derniereTranche(depuis, valeur);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal derniereTranche(int depuis, String taux) {
+        super.derniereTranche(depuis, taux);
+        return this;
+    }
+
+    public BaremeTauxMarginalConstantParTranche construire() {
         BaremeTauxMarginalConstantParTranche bareme = new BaremeTauxMarginalConstantParTranche();
         completerBareme(bareme);
         return bareme;
@@ -64,16 +121,24 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
 
         public TrancheBaremeTxMarginal(Intervalle intervalle, BigDecimal tauxOuMontant) {
             super(intervalle, tauxOuMontant);
-            calculMontantTranche();
         }
 
         private void calculMontantTranche() {
             if (getIntervalle().isBorne()) {
                 BigDecimal largeur = getIntervalle().getFin().subtract(getIntervalle().getDebut());
                 montantTranche = getTauxOuMontant().multiply(largeur);
+            } else if (getIntervalle().isFinPlusInfini()) {
+                throw new UnsupportedOperationException("Impossible de calculer le montant d'impôt d'une tranche " + getIntervalle() +"infinie !!");
             } else {
-                montantTranche = null;
+                montantTranche = getTauxOuMontant().multiply(getIntervalle().getFin());
             }
+        }
+
+        private BigDecimal getMontantTranche() {
+            if (null == montantTranche) {
+                calculMontantTranche();
+            }
+            return montantTranche;
         }
 
         @Override
@@ -84,10 +149,16 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
         @Override
         public BigDecimal calcul(BigDecimal montant) {
             if (getIntervalle().encadre(montant)) {
-                BigDecimal largeur = montant.subtract(getIntervalle().getDebut());
+                BigDecimal debut = getIntervalle().getDebut();
+                if (null == debut) {
+                    debut = BigDecimal.ZERO;
+                }
+                BigDecimal largeur = montant.subtract(debut);
                 return largeur.multiply(getTauxOuMontant());
             }
-            else if (getIntervalle().valeursInferieuresA(montant)) return montantTranche;
+            else if (getIntervalle().valeursInferieuresA(montant)) {
+                return getMontantTranche();
+            }
             else return BigDecimal.ZERO;
         }
     }

@@ -22,21 +22,30 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.math.BigDecimal.ZERO;
-
 public class ConstructeurBareme {
 
     protected List<TrancheBareme> tranches = new ArrayList();
+
     private TypeArrondi typeArrondiSurChaqueTranche = TypeArrondi.CT;
     private TypeArrondi typeArrondiGlobal = TypeArrondi.CT;
     private BigDecimal seuil;
     private boolean fermeAGauche = false;
-    protected BigDecimal montantMaxPrecedent = null;
 
+    /**
+     * Permet la construction des barèmes constants par tranche que
+     * ce soit la valeur ou le taux qui est constant.
+     * Un barème par tranche est une suite d'intervalle qui ne s'intersectent pas.
+     * Par défaut, les intervalles sont ouverts à gauche et fermés à droite c.-à-d.
+     * que l'intervalle dont le début est 3 et la fin est 4 ne comprend pas 3 mais comprend 4.
+     */
     public ConstructeurBareme() {
         super();
     }
 
+    /**
+     * Avec une liste de tranche prédéfinie. Ne devrait pas être utilisé très souvent !
+     * @param tranches
+     */
     public ConstructeurBareme(List<TrancheBareme> tranches) {
         this();
         this.tranches = tranches;
@@ -79,44 +88,49 @@ public class ConstructeurBareme {
         return this;
     }
 
-    protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
-        return new TrancheBareme(inter,montantOuTaux);
+    protected void ajouterTranche(TrancheBareme tranche) {
+        // TODO vérifier le non recouvrement des tranches
+        // Attention aux performances sur les barèmes avec beaucoup de tranches
+        // par exemple les barèmes d'impôt à la source.
+        // On pourra avoir une stratégie fonction du nombre de tranche.
+        // Afin de permettre la construction parallèle des tranches, il ne faut surtout pas
+        // faire l'hypothèse que les tranches sont ordonnées.
+        tranches.add(tranche);
     }
 
-    protected Intervalle construireIntervalle(BigDecimal montant) {
+    protected Intervalle construirePremierIntervalle(BigDecimal jusqua) {
+        Intervalle.Cons cons = new Intervalle.Cons().deMoinsInfini().a(jusqua);
+        if (fermeAGauche) {
+            cons = cons.exclus();
+        } else {
+            cons = cons.inclus();
+        }
+        return cons.intervalle();
+    }
+
+    protected Intervalle construireIntervalle(BigDecimal de, BigDecimal a) {
         Intervalle.Cons cons = new Intervalle.Cons();
-        if (null == montantMaxPrecedent) {
+        if (null == de) {
             cons = cons.deMoinsInfini();
             if (fermeAGauche) {
-                cons = cons.a(montant).exclus();
+                cons = cons.a(a).exclus();
             } else {
-                cons = cons.a(montant).inclus();
+                cons = cons.a(a).inclus();
             }
         } else {
             if (fermeAGauche) {
-                cons = cons.de(montantMaxPrecedent).inclus()
-                        .a(montant).exclus();
+                cons = cons.de(de).inclus()
+                        .a(a).exclus();
             } else {
-                cons = cons.de(montantMaxPrecedent).exclus()
-                        .a(montant).inclus();
+                cons = cons.de(de).exclus()
+                        .a(a).inclus();
             }
         }
         return cons.intervalle();
     }
 
-    protected TrancheBareme construireTranche(BigDecimal montant, BigDecimal montantOuTaux) {
-        Intervalle inter = construireIntervalle(montant);
-        TrancheBareme tranche = construireTranche(inter,montantOuTaux);
-        montantMaxPrecedent = montant;
-        return tranche;
-    }
-
-    private TrancheBareme construireTranche(int montant, BigDecimal taux) {
-        return construireTranche(BigDecimal.valueOf(montant),taux);
-    }
-
-    protected Intervalle construireDernierIntervalle() {
-        Intervalle.Cons cons = new Intervalle.Cons().de(montantMaxPrecedent);
+    protected Intervalle construireDernierIntervalle(BigDecimal depuis) {
+        Intervalle.Cons cons = new Intervalle.Cons().de(depuis);
         if (fermeAGauche) {
             cons = cons.inclus();
         } else {
@@ -125,51 +139,102 @@ public class ConstructeurBareme {
         return cons.aPlusInfini().intervalle();
     }
 
-    protected TrancheBareme construireTranche(BigDecimal montantOuTaux) {
-        return new TrancheBareme(construireDernierIntervalle(),montantOuTaux);
+    /**
+     * Cette méthode sera surchargée pour spécialiser les tranches de barèmes.
+     * Par défaut, on utilise la tranche avec montant ou taux constant.
+     * @param inter L'intervalle délimitant la tranche
+     * @param montantOuTaux La valeur du barème pour tous les éléments appartenant à l'intervalle.
+     * @return Une tranche de barème qui pourra être ajoutée à la liste des tranches du barèmes.
+     */
+    protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
+        return new TrancheBareme(inter,montantOuTaux);
     }
 
-    public final ConstructeurBareme tranche(int montant, BigDecimal taux) {
-        return tranche(BigDecimal.valueOf(montant),taux);
+    private TrancheBareme construireUniqueTranche(BigDecimal valeur) {
+        return construireTranche(Intervalle.TOUT,valeur);
     }
 
-    public final ConstructeurBareme tranche(BigDecimal montant, BigDecimal taux) {
-        Intervalle intervalle = construireIntervalle(montant);
+    private TrancheBareme construirePremiereTranche(BigDecimal jusqua, BigDecimal montantOuTaux) {
+        Intervalle inter = construirePremierIntervalle(jusqua);
+        return construireTranche(inter,montantOuTaux);
+    }
+
+    private TrancheBareme construireDerniereTranche(BigDecimal depuis, BigDecimal montantOuTaux) {
+        Intervalle inter = construireDernierIntervalle(depuis);
+        return construireTranche(inter,montantOuTaux);
+    }
+
+    private TrancheBareme construireTranche(BigDecimal de, BigDecimal a, BigDecimal montantOuTaux) {
+        Intervalle inter = construireIntervalle(de,a);
+        return construireTranche(inter,montantOuTaux);
+    }
+
+    public ConstructeurBareme uniqueTranche(BigDecimal valeur) {
+        ajouterTranche(construireUniqueTranche(valeur));
+        return this;
+    }
+
+    public ConstructeurBareme uniqueTranche(String taux) {
+        return uniqueTranche(BigDecimalUtil.parseTaux(taux));
+    }
+
+    public ConstructeurBareme uniqueTranche(int valeur) {
+        return uniqueTranche(BigDecimal.valueOf(valeur));
+    }
+
+    public ConstructeurBareme premiereTranche(BigDecimal jusqua, BigDecimal taux) {
+        ajouterTranche(construirePremiereTranche(jusqua,taux));
+        return this;
+    }
+
+    public ConstructeurBareme premiereTranche(int jusqua, String taux) {
+        return premiereTranche(BigDecimal.valueOf(jusqua),BigDecimalUtil.parseTaux(taux));
+    }
+
+    public ConstructeurBareme premiereTranche(int jusqua, int valeur) {
+        return premiereTranche(BigDecimal.valueOf(jusqua),BigDecimal.valueOf(valeur));
+    }
+
+    public ConstructeurBareme tranche(BigDecimal de, BigDecimal a, BigDecimal taux) {
+        // TODO Reprendre cette partie qui suppose une cosntruction ordonnée des tranches.
+        Intervalle intervalle = construireIntervalle(de,a);
         if (tranches.size() > 0) {
             TrancheBareme derniereTranche = tranches.get(tranches.size()-1);
             if (0 == derniereTranche.getTauxOuMontant().compareTo(taux)) {
                 Intervalle inter = intervalle.union(derniereTranche.getIntervalle());
                 tranches.set(tranches.size()-1,construireTranche(inter,taux));
-                montantMaxPrecedent = montant;
             } else {
-                tranches.add(construireTranche(montant,taux));
+                ajouterTranche(construireTranche(de,a,taux));
             }
         } else {
-            tranches.add(construireTranche(montant,taux));
+            ajouterTranche(construireTranche(de,a,taux));
         }
         return this;
     }
 
-
-    public final ConstructeurBareme tranche(int montant, String taux) {
-        return this.tranche(montant, BigDecimalUtil.parseTaux(taux));
+    public ConstructeurBareme tranche(int de, int a, BigDecimal taux) {
+        return tranche(BigDecimal.valueOf(de), BigDecimal.valueOf(a),taux);
     }
 
-    public final ConstructeurBareme tranche(int montantImposable, int montant) {
-        return this.tranche(montantImposable, new BigDecimal(montant));
+    public ConstructeurBareme tranche(int de, int a, String taux) {
+        return this.tranche(de,a, BigDecimalUtil.parseTaux(taux));
     }
 
-    public final ConstructeurBareme derniereTranche(BigDecimal taux) {
-        tranches.add(construireTranche(taux));
+    public ConstructeurBareme tranche(int de, int a, int valeur) {
+        return this.tranche(BigDecimal.valueOf(de), BigDecimal.valueOf(a), BigDecimal.valueOf(valeur));
+    }
+
+    public ConstructeurBareme derniereTranche(BigDecimal depuis, BigDecimal taux) {
+        ajouterTranche(construireDerniereTranche(depuis,taux));
         return this;
     }
 
-    public final ConstructeurBareme derniereTranche(int montant) {
-        return derniereTranche(BigDecimal.valueOf(montant));
+    public ConstructeurBareme derniereTranche(int depuis,int valeur) {
+        return derniereTranche(BigDecimal.valueOf(depuis),BigDecimal.valueOf(valeur));
     }
 
-    public final ConstructeurBareme derniereTranche(String taux) {
-        return derniereTranche(BigDecimalUtil.parseTaux(taux));
+    public ConstructeurBareme derniereTranche(int depuis, String taux) {
+        return derniereTranche(BigDecimal.valueOf(depuis),BigDecimalUtil.parseTaux(taux));
     }
 
     protected void completerBareme(BaremeParTranche bareme) {

@@ -18,9 +18,13 @@ package org.impotch.bareme;
 import org.impotch.util.TypeArrondi;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Intervalle {
+
+    public static final Intervalle TOUT = new Intervalle(null,true,null,true);
 
     private final BigDecimal debut;
     private final boolean debutInclus;
@@ -32,6 +36,11 @@ public class Intervalle {
         this.debutInclus = debutInclus;
         this.fin = fin;
         this.finInclus = finInclus;
+    }
+
+    public BigDecimal getMilieu() {
+        if (null == debut || null == fin) throw new UnsupportedOperationException("Impossible de retourner le milieu de " + this);
+        return fin.add(debut).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP);
     }
 
     public boolean isDebutMoinsInfini() {
