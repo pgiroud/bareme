@@ -32,11 +32,10 @@ package org.impotch.bareme;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
 
 import org.impotch.util.TypeArrondi;
+import org.junit.jupiter.api.Test;
 
-import static org.impotch.bareme.BaremeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaremeTauxEffectifConstantParTrancheTest {

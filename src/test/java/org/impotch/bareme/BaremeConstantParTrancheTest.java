@@ -35,8 +35,8 @@ import java.math.BigDecimal;
 
 import org.impotch.util.BigDecimalUtil;
 import org.impotch.util.TypeArrondi;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,7 +44,7 @@ public class BaremeConstantParTrancheTest {
 
     private ConstructeurBareme constructeur;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         constructeur = new ConstructeurBareme()
                 .premiereTranche(1000,1)

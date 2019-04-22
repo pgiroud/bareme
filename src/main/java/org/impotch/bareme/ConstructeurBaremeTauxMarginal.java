@@ -38,72 +38,93 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
 
     @Override
     protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
-        TrancheBaremeTxMarginal tranche = new TrancheBaremeTxMarginal(inter, montantOuTaux);
-        return tranche;
+        return new TrancheBaremeTxMarginal(inter, montantOuTaux);
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal uniqueTranche(String taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.uniqueTranche(taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal premiereTranche(BigDecimal jusqua, BigDecimal taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.premiereTranche(jusqua, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal premiereTranche(int jusqua, String taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.premiereTranche(jusqua, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal premiereTranche(int jusqua, int valeur) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.premiereTranche(jusqua, valeur);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal tranche(BigDecimal de, BigDecimal a, BigDecimal taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.tranche(de, a, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal tranche(int de, int a, BigDecimal taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.tranche(de, a, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal tranche(int de, int a, String taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.tranche(de, a, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal tranche(int de, int a, int valeur) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.tranche(de, a, valeur);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal derniereTranche(BigDecimal depuis, BigDecimal taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.derniereTranche(depuis, taux);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal derniereTranche(int depuis, int valeur) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.derniereTranche(depuis, valeur);
         return this;
     }
 
     @Override
     public ConstructeurBaremeTauxMarginal derniereTranche(int depuis, String taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
         super.derniereTranche(depuis, taux);
         return this;
     }

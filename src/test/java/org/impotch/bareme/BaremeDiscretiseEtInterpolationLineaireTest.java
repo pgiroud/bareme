@@ -33,11 +33,12 @@ package org.impotch.bareme;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
 
 import org.impotch.util.TypeArrondi;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class BaremeDiscretiseEtInterpolationLineaireTest {
@@ -70,7 +71,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
         assertThat(bareme.calcul(BigDecimal.valueOf(1000000))).isEqualTo(MILLE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void apresDernierTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
         bareme.setTypeArrondi(TypeArrondi.FRANC);
@@ -79,11 +80,12 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
         // Test sur borne supérieure
         assertThat(bareme.calcul(MILLE)).isEqualTo(MILLE);
         // Test sur montant > borne supérieure
-        bareme.calcul(new BigDecimal(1001));
-        failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+                () -> bareme.calcul(new BigDecimal(1001))
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void avantPremiereTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
         bareme.setTypeArrondi(TypeArrondi.FRANC);
@@ -92,8 +94,9 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
         // Test sur borne inférieure
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("0");
         // Test sur montant < borne inférieure
-        bareme.calcul(new BigDecimal(-1));
-        failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+                () -> bareme.calcul(new BigDecimal(-1))
+        );
     }
 
     @Test
