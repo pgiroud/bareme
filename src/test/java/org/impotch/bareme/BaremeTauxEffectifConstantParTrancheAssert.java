@@ -33,6 +33,7 @@ package org.impotch.bareme;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AbstractBigDecimalAssert;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.impotch.util.BigDecimalUtil;
 
 import java.math.BigDecimal;
@@ -84,7 +85,7 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
             // Comparaison des intervalles
             Intervalle intervalle = tranche.getIntervalle();
             Intervalle intervalleAttendu = trancheAttendue.getIntervalle();
-            Assertions.assertThat(intervalle)
+            AssertionsForClassTypes.assertThat(intervalle)
                     .overridingErrorMessage("Sur la tranche %1$d, abscisse attendue %2$s mais est %3$s", i, intervalleAttendu, intervalle)
                     .isEqualTo(intervalleAttendu);
             // Comparaison des ordonnées

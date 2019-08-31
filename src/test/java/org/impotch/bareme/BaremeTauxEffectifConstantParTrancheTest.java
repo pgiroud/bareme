@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 public class BaremeTauxEffectifConstantParTrancheTest {
 
     private final static BigDecimal MILLE = BigDecimal.valueOf(1000);
@@ -104,6 +105,26 @@ public class BaremeTauxEffectifConstantParTrancheTest {
         Bareme baremeOptimise = constructeur.construireBaremeTauxEffectifConstantParTranche();
 
         assertThat(bareme).isEqualTo(baremeOptimise);
+    }
+
+    @Test
+    public void assertion() {
+        ConstructeurBareme cons = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .tranche(0,1000, "1 %")
+                .tranche(1000,2000, "1 %")
+                .derniereTranche(2000,"2 %");
+        BaremeTauxEffectifConstantParTranche bareme1 = cons.construireBaremeTauxEffectifConstantParTranche();
+
+        cons = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .tranche(0,1000, "1 %")
+                .tranche(1000,2000, "1 %")
+                .derniereTranche(2000,"2 %");
+        BaremeTauxEffectifConstantParTranche bareme2 = cons.construireBaremeTauxEffectifConstantParTranche();
+
+        BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
+
     }
 
 }
