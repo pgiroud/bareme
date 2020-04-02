@@ -139,7 +139,8 @@
                         <attributes>
                             <source-highlighter>coderay</source-highlighter>
                             <coderay-css>style</coderay-css>
-                            <imagesdir>../../target/site/images</imagesdir>
+                            <outdir>../../../target/site</outdir>
+                            <imagesdir>images</imagesdir>
                         </attributes>
                     </asciidoc>
                 </configuration>
@@ -156,69 +157,6 @@
 					</dependency>
                 </dependencies>
             </plugin>
-
-
-<!--
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${asciidoctor.maven.plugin.version}</version>
-                <dependencies>
-                    &lt;!&ndash; Comment this section to use the default jruby artifact provided by the plugin &ndash;&gt;
-                    <dependency>
-                        <groupId>org.jruby</groupId>
-                        <artifactId>jruby-complete</artifactId>
-                        <version>${jruby.version}</version>
-                    </dependency>
-                    &lt;!&ndash; Comment this section to use the default AsciidoctorJ artifact provided by the plugin &ndash;&gt;
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctorj</artifactId>
-                        <version>${asciidoctorj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctorj-diagram</artifactId>
-                        <version>${asciidoctorj.diagram.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <sourceDirectory>src/site/asciidoc</sourceDirectory>
-                    <requires>
-                        <require>asciidoctor-diagram</require>
-                    </requires>
-                    <attributes>
-                        &lt;!&ndash; Example below shows how to specify in this pom instead of System's PATH, the location of dot command of Graphviz, required by PlantUML libraries &ndash;&gt;
-                        &lt;!&ndash; Windows:
-                            <graphvizdot>C:\Program Files (x86)\Graphviz2.38\bin\dot.exe</graphvizdot>
-                        &ndash;&gt;
-                        &lt;!&ndash; *nix :
-                            <graphvizdot>/usr/local/bin/dot</graphvizdot>
-                        &ndash;&gt;
-                    </attributes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-html-doc</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                            <attributes>
-                                <imagesdir>./images</imagesdir>
-                                <toc>left</toc>
-                                <icons>font</icons>
-                                <sectanchors>true</sectanchors>
-                                <idprefix/>
-                                <idseparator>-</idseparator>
-                            </attributes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
