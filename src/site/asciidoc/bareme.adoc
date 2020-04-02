@@ -1,0 +1,126 @@
+= Tout sur les barèmes
+
+
+== Généralités
+
+Cette librairie est utilisée dans le cadre de la fiscalité pour définir des barèmes de toutes
+sorte. On pense bien sûr en premier lieu aux barèmes de calcul de l'impôt.
+
+Un barème est simplement une fonction qui a un nombre réel associe un autre nombre réel (positif).
+
+Très souvent, les barèmes sont définis par tranche et publiés dans les lois. Quelques exemples :
+
+- à Genève, barème à taux marginal pour l'impôt sur le revenu (voir article 41 de la https://www.ge.ch/legislation/rsg/f/rsg_d3_08.html[LIPP])
+- dans tous les cantons suisses, https://www.estv.admin.ch/estv/fr/home/direkte-bundessteuer/quellensteuer/dienstleistungen/tarife-herunterladen.html[barèmes] à taux effectif pour l'impôt à la source
+- en Suisse, l'impôt fédéral direct sur le revenu (https://www.admin.ch/opc/fr/classified-compilation/19900329/index.html#a36[article 36 de la LIFD])
+
+
+
+Une exception toutefois : les barèmes de l'impôt sur le revenu perçu par l'État de Genève de 1995 à 2009.
+Ceux-ci étaient définis par des formules mathématiques très compliquées à comprendre par la plupart des contribuables.
+
+Dans cette librairie, nous avons définis les barèmes ci-dessous.
+
+[plantuml, hierarchieBareme, png]
+----
+interface Bareme {
+decimal calcul(decimal valeur)
+}
+
+
+abstract BaremeParTranche
+class TrancheBareme
+
+Bareme <|- BaremeParTranche
+BaremeParTranche -> "1..*" TrancheBareme
+
+class BaremeConstantParTranche
+abstract BaremeTauxEffectifParTranche
+class BaremeTauxMarginalConstantParTranche
+class BaremeTauxEffectifConstantParTranche
+
+BaremeParTranche <|-- BaremeConstantParTranche
+BaremeParTranche <|-- BaremeTauxEffectifParTranche
+BaremeTauxEffectifParTranche <|-- BaremeTauxEffectifConstantParTranche
+BaremeParTranche <|-- BaremeTauxMarginalConstantParTranche
+----
+
+On peut constater des spécialisations de la notion de barème par tranche. Ces spécialisations permettent de préciser
+la façon dont se fait le calcul.
+
+=== Barème constant par tranche et à taux effectif constant par tranche
+Pour ces 2 spécialisations, en fonction de la valeur d'entrée, on recherche tout d'abord une unique tranche.
+Une fois cette tranche trouvée (il s'agit d'un intervalle, il faudra être attentif aux bornes de l'intervalle),
+il suffit de lire la valeur :
+
+- pour un barème constant par tranche, la valeur est immédiatement retournée
+- pour un barème à taux effectif constant par tranche, on applique le taux retourné par le barème à la valeur d'entrée.
+
+=== Barème à taux marginal constant par tranche
+Pour cette spécialisation, le calcul est un petit peu plus compliqué et il fait intervenir toutes les tranches avant
+celle contenant la valeur d'entrée.
+
+Exemple : pour un barème à taux marginal libellé comme suit
+
+- jusqu'à 1000 francs, 10 %
+- au delà, 20 %
+
+Pour une valeur d'entrée de 3000 francs, la valeur de sortie sera : 1000 * 10% + (3000-1000) * 20%
+
+L'avantage de ces barèmes est qu'ils sont continus c.-à-d. qu'ils ne présentent pas les effets de seuil observé sur
+les barèmes à taux effectif. Pour les impôts progressifs (revenu, fortune des personnes physiques), ce sont en général
+ces barèmes qui sont utilisés.
+
+Pour ceux ayant quelques souvenirs d'intégration, la valeur obtenue est l'intégrale du taux marginal entre 0 et la valeur d'entrée.
+Le calcul est donc un peu plus compliqué que pour les taux effectifs.
+
+== La construction des barèmes
+
+Nous allons donner quelques exemples de construction des barèmes.
+
+=== les barèmes constants ou à taux effectif constant par tranche
+
+Un exemple de construction d'un barème à taux effectif constant par tranche :
+
+[source,java]
+----
+        ConstructeurBareme constructeur = new ConstructeurBareme()
+                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
+                .premiereTranche(1000, "1 %")
+                .tranche(1000,2000, "2 %")
+                .derniereTranche(2000,"3 %");
+
+        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
+----
+
+Si on calcule avec ce barème, on obtient :
+[%header,format=csv]
+|===
+Attribut,Valeur
+-1000,-10
+0,0
+1000,10
+1001,20
+1050,21
+2000,40
+2001,60
+|===
+On constate donc que les barèmes à taux effectif constant par tranche ont le désavantage d'avoir des effets de seuil. Lorsque l'on passe de 2000 à 2001 soit une augmentation de 1,
+la valeur augmente de 20 !
+
+=== les barèmes à taux marginal constant par tranche
+
+Par exemple, le https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France[barème] de l'impôt sur le revenu français de 2018
+
+[source,java]
+----
+    BaremeTauxMarginalConstantParTranche irFrance2018 = new ConstructeurBaremeTauxMarginal()
+        .premiereTranche(  9964, " 0 %")
+        .tranche( 9964,27519," 14 %")
+        .tranche( 27519,73779," 30 %")
+        .tranche(73779,156244, "41 %")
+        .derniereTranche(156244,"45 %")
+        .typeArrondiSurChaqueTranche(TypeArrondi.FRANC_INF)
+        .construire();
+----
+Dans le cas où le barème est défini par une seul tranche, on pourra utiliser
