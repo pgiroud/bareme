@@ -12,6 +12,7 @@ Très souvent, les barèmes sont définis par tranche et publiés dans les lois.
 
 - à Genève, barème à taux marginal pour l'impôt sur le revenu (voir article 41 de la https://www.ge.ch/legislation/rsg/f/rsg_d3_08.html[LIPP])
 - dans tous les cantons suisses, https://www.estv.admin.ch/estv/fr/home/direkte-bundessteuer/quellensteuer/dienstleistungen/tarife-herunterladen.html[barèmes] à taux effectif pour l'impôt à la source
+- à Fribourg, barème à taux effectif linéaire par tranche (voir art.37 de la https://bdlf.fr.ch/app/fr/texts_of_law/631.1[LICD])
 - en Suisse, l'impôt fédéral direct sur le revenu (https://www.admin.ch/opc/fr/classified-compilation/19900329/index.html#a36[article 36 de la LIFD])
 
 
@@ -38,10 +39,12 @@ class BaremeConstantParTranche
 abstract BaremeTauxEffectifParTranche
 class BaremeTauxMarginalConstantParTranche
 class BaremeTauxEffectifConstantParTranche
+class BaremeTauxEffectifLineaireParTranche
 
 BaremeParTranche <|-- BaremeConstantParTranche
 BaremeParTranche <|-- BaremeTauxEffectifParTranche
 BaremeTauxEffectifParTranche <|-- BaremeTauxEffectifConstantParTranche
+BaremeTauxEffectifParTranche <|-- BaremeTauxEffectifLineaireParTranche
 BaremeParTranche <|-- BaremeTauxMarginalConstantParTranche
 ----
 

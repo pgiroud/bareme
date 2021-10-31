@@ -31,6 +31,9 @@ public class ConstructeurBareme {
     private BigDecimal seuil;
     private boolean fermeAGauche = false;
 
+    private BigDecimal borneInferieure = null;
+    private BigDecimal borneSuperieure = null;
+
     /**
      * Permet la construction des barèmes constants par tranche que
      * ce soit la valeur ou le taux qui est constant.
@@ -167,6 +170,72 @@ public class ConstructeurBareme {
     private TrancheBareme construireTranche(BigDecimal de, BigDecimal a, BigDecimal montantOuTaux) {
         Intervalle inter = construireIntervalle(de,a);
         return construireTranche(inter,montantOuTaux);
+    }
+
+    public ConstructeurBareme de(BigDecimal borneInferieure) {
+        // TODO jeter IllegalStateException
+        this.borneInferieure = borneInferieure;
+        return this;
+    }
+
+    public ConstructeurBareme de(int borneInferieure) {
+        return de(BigDecimal.valueOf(borneInferieure));
+    }
+
+    public ConstructeurBareme a(BigDecimal borneSuperieure) {
+        if (null == borneInferieure) throw new IllegalStateException("La méthode 'a' doit être précédée de la méthode 'de'.");
+        this.borneSuperieure = borneSuperieure;
+        return this;
+    }
+
+    public ConstructeurBareme a(int borneSuperieure) {
+        return a(BigDecimal.valueOf(borneSuperieure));
+    }
+
+    public ConstructeurBareme jusqua(BigDecimal borneSuperieure) {
+        if (null != borneInferieure) throw new IllegalStateException("La méthode 'jusqua' ne peut être " +
+                "utilisée qu'avec le premier intervalle sans borne inférieure !");
+        this.borneSuperieure = borneSuperieure;
+        return this;
+    }
+
+    public ConstructeurBareme jusqua(int borneSuperieure) {
+        return jusqua(BigDecimal.valueOf(borneSuperieure));
+    }
+
+    public ConstructeurBareme aPartirDe(BigDecimal borneInferieure) {
+        if (null != borneSuperieure) throw new IllegalStateException("La méthode 'aPartirDe' ne peut être " +
+                "utilisée qu'avec le dernier intervalle sans borne supérieure !");
+        this.borneInferieure = borneInferieure;
+        return this;
+    }
+
+    public ConstructeurBareme aPartirDe(int borneInferieure) {
+        return aPartirDe(BigDecimal.valueOf(borneInferieure));
+    }
+
+    public ConstructeurBareme tauxOuValeur(BigDecimal tauxOuValeur) {
+        ConstructeurBareme cons = null;
+        if (null == borneInferieure) {
+            if (null == borneSuperieure) {
+                cons = uniqueTranche(tauxOuValeur);
+            } else {
+                cons = premiereTranche(borneSuperieure,tauxOuValeur);
+            }
+        } else {
+            if (null == borneSuperieure) {
+                cons = derniereTranche(borneInferieure,tauxOuValeur);
+            } else {
+                cons = tranche(borneInferieure,borneSuperieure,tauxOuValeur);
+            }
+        }
+        borneInferieure = null;
+        borneSuperieure = null;
+        return cons;
+    }
+
+    public ConstructeurBareme taux(String taux) {
+        return tauxOuValeur(BigDecimalUtil.parseTaux(taux));
     }
 
     public ConstructeurBareme uniqueTranche(BigDecimal valeur) {

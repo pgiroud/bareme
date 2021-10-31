@@ -129,6 +129,86 @@ public class ConstructeurBaremeTauxMarginal extends ConstructeurBareme {
         return this;
     }
 
+    @Override
+    public ConstructeurBaremeTauxMarginal de(BigDecimal borneInferieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.de(borneInferieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal de(int borneInferieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.de(borneInferieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal a(BigDecimal borneSuperieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.a(borneSuperieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal a(int borneSuperieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.a(borneSuperieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal jusqua(BigDecimal borneSuperieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.jusqua(borneSuperieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal jusqua(int borneSuperieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.jusqua(borneSuperieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal aPartirDe(BigDecimal borneInferieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.aPartirDe(borneInferieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal aPartirDe(int borneInferieure) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.aPartirDe(borneInferieure);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBareme tauxOuValeur(BigDecimal tauxOuValeur) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.tauxOuValeur(tauxOuValeur);
+        return this;
+    }
+
+    @Override
+    public ConstructeurBaremeTauxMarginal taux(String taux) {
+        // On surcharge uniquement pour permettre le chaînage sur les
+        // constructeurs (pattern builder)
+        super.taux(taux);
+        return this;
+    }
+
     public BaremeTauxMarginalConstantParTranche construire() {
         BaremeTauxMarginalConstantParTranche bareme = new BaremeTauxMarginalConstantParTranche();
         completerBareme(bareme);
