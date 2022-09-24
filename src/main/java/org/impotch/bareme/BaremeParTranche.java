@@ -151,4 +151,16 @@ public abstract class BaremeParTranche implements Bareme {
     public BaremeParTranche homothetieValeur(BigDecimal taux, TypeArrondi typeArrondi) {
         throw new RuntimeException();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("BaremeParTranche");
+        for (TrancheBareme tranche : tranches) {
+            builder.append("\n\t\t").append(tranche);
+        }
+        builder.append("\n\ttypeArrondiSurChaqueTranche : ").append(typeArrondiSurChaqueTranche);
+        builder.append("\n\ttypeArrondiGlobal : ").append(typeArrondiGlobal);
+        builder.append("\n\tseuil : ").append(seuil);
+        return builder.toString();
+    }
 }
