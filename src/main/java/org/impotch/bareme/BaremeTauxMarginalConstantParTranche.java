@@ -60,4 +60,8 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
         return new BaremeTauxMarginalConstantParTranche();
     }
 
+    @Override
+    public String toString() {
+        return "BaremeTauxMarginalConstantParTranche spécialisation de " + super.toString();
+    }
 }

@@ -63,6 +63,10 @@ public class Intervalle {
         return fin;
     }
 
+    public BigDecimal longueur() {
+        if (isDebutMoinsInfini() || isFinPlusInfini()) return null;
+        else return getFin().subtract(getDebut());
+    }
 
     private BigDecimal translate(BigDecimal coordonnee, BigDecimal rapport, TypeArrondi typeArrondi) {
         assert null != coordonnee;
