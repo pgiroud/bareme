@@ -40,8 +40,8 @@ package org.impotch.bareme;
  */
 public class BaremeAssert {
 
-    public static BaremeTauxEffectifConstantParTrancheAssert assertThat(BaremeTauxEffectifConstantParTranche actual) {
-        return new BaremeTauxEffectifConstantParTrancheAssert(actual);
+    public static BaremeParTrancheAssert assertThat(BaremeParTranche actual) {
+        return new BaremeParTrancheAssert(actual);
     }
 
 }

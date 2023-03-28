@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.impotch.util.BigDecimalUtil;
-import org.impotch.util.HashCodeBuilder;
 import org.impotch.util.TypeArrondi;
 
 /**
@@ -49,37 +48,44 @@ public class TrancheBareme {
     /**************************************************/
 
     private final Intervalle intervalle;
-    private final BigDecimal tauxOuMontant;
+    private final ValeursPremierOrdre valeurs;
 
     /**************************************************/
     /**************** Constructeurs *******************/
     /**************************************************/
 
 
-    protected TrancheBareme(Intervalle intervalle, BigDecimal tauxOuMontant) {
+    protected TrancheBareme(Intervalle intervalle, ValeursPremierOrdre valeurs) {
         super();
         this.intervalle = intervalle;
-        this.tauxOuMontant = tauxOuMontant;
+        this.valeurs = valeurs;
     }
 
     /**************************************************/
     /************* Accesseurs / Mutateurs *************/
     /**************************************************/
 
-    public BigDecimal getTauxOuMontant() {
-        return tauxOuMontant;
-    }
-
     public Intervalle getIntervalle() {
         return intervalle;
     }
+
+    public ValeursPremierOrdre getValeurs() { return valeurs; }
 
     /**************************************************/
     /******************* Méthodes *********************/
     /**************************************************/
 
-    protected TrancheBareme newTranche(Intervalle intervalle, BigDecimal tauxOuMontant) {
-        return new TrancheBareme(intervalle,tauxOuMontant);
+
+    public boolean compactable(TrancheBareme tranche) {
+        return this.getIntervalle().adjacent(tranche.intervalle) && this.valeurs.equals(tranche.valeurs);
+    }
+
+    public TrancheBareme compacte(TrancheBareme tranche) {
+        return new TrancheBareme(this.getIntervalle().union(tranche.intervalle),this.valeurs);
+    }
+
+    protected TrancheBareme newTranche(Intervalle intervalle, ValeursPremierOrdre valeurs) {
+        return new TrancheBareme(intervalle,valeurs);
     }
 
     /**
@@ -93,25 +99,45 @@ public class TrancheBareme {
     public TrancheBareme homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
         if (!BigDecimalUtil.isStrictementPositif(rapport))
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
-        return newTranche(intervalle.homothetie(rapport,typeArrondi), this.getTauxOuMontant());
+        return newTranche(intervalle.homothetie(rapport,typeArrondi), this.getValeurs());
     }
 
     public TrancheBareme homothetieValeur(BigDecimal rapport, TypeArrondi typeArrondi) {
         if (!BigDecimalUtil.isStrictementPositif(rapport))
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
-        BigDecimal inter = this.getTauxOuMontant().multiply(rapport);
-        BigDecimal tauxOuMontant = typeArrondi.arrondirMontant(inter);
-        return newTranche(this.intervalle, tauxOuMontant);
+        return newTranche(this.intervalle, getValeurs().multiplie(rapport,typeArrondi));
     }
 
+
+
     public BigDecimal calcul(BigDecimal montant) {
-        if (intervalle.encadre(montant)) return this.tauxOuMontant;
+        if (intervalle.encadre(montant)) {
+            BigDecimal largeur = intervalle.estBorneAGauche() ?
+                    montant.subtract(getIntervalle().getDebut()) : BigDecimal.ZERO;
+            return getValeurs().calcul(largeur);
+        }
         return BigDecimal.ZERO;
     }
 
+
+
+    public BigDecimal integre(BigDecimal montant) {
+        BigDecimal debut = intervalle.estBorneAGauche() ? intervalle.getDebut() : BigDecimal.ZERO;
+        BigDecimal largeur = BigDecimal.ZERO;
+        if (intervalle.valeursInferieuresA(montant)) {
+            largeur = intervalle.longueur();
+        }
+        if (intervalle.encadre(montant)) {
+            largeur = new Intervalle.Cons().de(debut).a(montant).intervalle().longueur();
+
+        }
+        return getValeurs().calcul(largeur);
+    }
+
+
     @Override
     public String toString() {
-        return intervalle + " " + tauxOuMontant;
+        return intervalle + " " + valeurs;
     }
 
     @Override
@@ -120,12 +146,12 @@ public class TrancheBareme {
         if (o == null || getClass() != o.getClass()) return false;
         TrancheBareme that = (TrancheBareme) o;
         return Objects.equals(intervalle, that.intervalle) &&
-                Objects.equals(tauxOuMontant, that.tauxOuMontant);
+                Objects.equals(valeurs, that.valeurs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(intervalle, tauxOuMontant);
+        return Objects.hash(intervalle, valeurs);
     }
 
 }

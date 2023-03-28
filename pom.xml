@@ -5,14 +5,14 @@
     <!-- The Basics -->
     <groupId>org.impotch</groupId>
     <artifactId>bareme</artifactId>
-    <version>2.1.3</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.impotch</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.6</version>
+            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

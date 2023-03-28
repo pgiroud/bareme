@@ -37,6 +37,7 @@ import org.impotch.util.TypeArrondi;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxEffectif;
 
 
 public class BaremeTauxEffectifConstantParTrancheTest {
@@ -47,12 +48,9 @@ public class BaremeTauxEffectifConstantParTrancheTest {
 
     @Test
     public void uneSeuleTranche() {
-        ConstructeurBareme constructeur = new ConstructeurBareme()
-            .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-            .uniqueTranche("10 %");
-
-
-        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
+        Bareme bareme = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .uniqueTranche("10 %").construire();
 
         assertThat(bareme.calcul(MILLE)).isEqualTo(CENT);
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-100");
@@ -63,13 +61,11 @@ public class BaremeTauxEffectifConstantParTrancheTest {
 
     @Test
     public void plusieursTranches() {
-        ConstructeurBareme constructeur = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .premiereTranche(1000, "1 %")
-                .tranche(1000,2000, "2 %")
-                .derniereTranche(2000,"3 %");
-
-        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
+        Bareme bareme = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .jusqua(1000).taux("1 %")
+                .de(1000).a(2000).taux("2 %")
+                .plusDe(2000).taux("3 %").construire();
 
         // 1 %
         assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("-10");
@@ -89,39 +85,33 @@ public class BaremeTauxEffectifConstantParTrancheTest {
 
     @Test
     public void optimisation() {
-        ConstructeurBareme constructeur = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .tranche(0,1000, "1 %")
-                .tranche(1000,2000, "1 %")
-                .derniereTranche(2000,"2 %");
+        Bareme bareme = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .de(0).a(1000).taux("1 %")
+                .de(1000).a(2000).taux("1 %")
+                .plusDe(2000).taux("2 %").construire();
 
-
-        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
-
-        constructeur = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .tranche(0,2000, "1 %")
-                .derniereTranche(2000,"2 %");
-        Bareme baremeOptimise = constructeur.construireBaremeTauxEffectifConstantParTranche();
+        Bareme baremeOptimise = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .de(0).a(2000).taux("1 %")
+                .plusDe(2000).taux("2 %").construire();
 
         assertThat(bareme).isEqualTo(baremeOptimise);
     }
 
     @Test
     public void assertion() {
-        ConstructeurBareme cons = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .tranche(0,1000, "1 %")
-                .tranche(1000,2000, "1 %")
-                .derniereTranche(2000,"2 %");
-        BaremeTauxEffectifConstantParTranche bareme1 = cons.construireBaremeTauxEffectifConstantParTranche();
+        BaremeParTranche bareme1 = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .de(0).a(1000).taux("1 %")
+                .de(1000).a(2000).taux("1 %")
+                .plusDe(2000).taux("2 %").construire();
 
-        cons = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .tranche(0,1000, "1 %")
-                .tranche(1000,2000, "1 %")
-                .derniereTranche(2000,"2 %");
-        BaremeTauxEffectifConstantParTranche bareme2 = cons.construireBaremeTauxEffectifConstantParTranche();
+        BaremeParTranche bareme2 = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .de(0).a(1000).taux("1 %")
+                .de(1000).a(2000).taux("1 %")
+                .plusDe(2000).taux("2 %").construire();
 
         BaremeAssert.assertThat(bareme1).isEqualTo(bareme2);
 

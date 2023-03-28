@@ -69,6 +69,10 @@ public abstract class BaremeParTranche implements Bareme {
         this.tranches = tranches;
     }
 
+    List<TrancheBareme> obtenirTranches() {
+        return new ArrayList<TrancheBareme>(getTranches());
+    }
+
     /**
      * @param typeArrondi the typeArrondi to set
      */

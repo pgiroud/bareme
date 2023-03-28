@@ -43,20 +43,20 @@ public class Intervalle {
         return fin.add(debut).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP);
     }
 
-    public boolean isDebutMoinsInfini() {
-        return null == debut;
+    public boolean estBorneAGauche() {
+        return null != debut;
     }
 
     public BigDecimal getDebut() {
         return debut;
     }
 
-    public boolean isFinPlusInfini() {
-        return null == fin;
+    public boolean estBorneADroite() {
+        return null != fin;
     }
 
     public boolean isBorne() {
-        return !isDebutMoinsInfini() && !isFinPlusInfini();
+        return estBorneAGauche() && estBorneADroite();
     }
 
     public BigDecimal getFin() {
@@ -64,7 +64,7 @@ public class Intervalle {
     }
 
     public BigDecimal longueur() {
-        if (isDebutMoinsInfini() || isFinPlusInfini()) return null;
+        if (!isBorne()) return null;
         else return getFin().subtract(getDebut());
     }
 
@@ -75,8 +75,8 @@ public class Intervalle {
 
     public Intervalle homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
         Cons cons = new Cons();
-        cons = (isDebutMoinsInfini()) ?  cons.deMoinsInfini() : cons.de(translate(debut,rapport,typeArrondi));
-        cons = (isFinPlusInfini()) ? cons.aPlusInfini() : cons.a(translate(fin,rapport,typeArrondi));
+        cons = (!estBorneAGauche()) ?  cons.deMoinsInfini() : cons.de(translate(debut,rapport,typeArrondi));
+        cons = (!estBorneADroite()) ? cons.aPlusInfini() : cons.a(translate(fin,rapport,typeArrondi));
         return cons.intervalle();
     }
 
@@ -96,14 +96,26 @@ public class Intervalle {
         }
     }
 
+    public boolean adjacent(Intervalle inter) {
+        if (null == this.fin) {
+            if (null == this.debut) return false;
+            return this.debut.equals(inter.getFin());
+        }
+        if (null == this.debut) {
+            return this.fin.equals(inter.debut);
+        }
+        return 0 == this.getFin().compareTo(inter.getDebut())
+                || this.debut.equals(inter.getFin());
+    }
+
     public boolean valeursInferieuresA(BigDecimal x) {
         assert null != x;
-        return !isFinPlusInfini() && getFin().compareTo(x) < 0;
+        return estBorneADroite() && getFin().compareTo(x) < 0;
     }
 
     public boolean valeursSuperieuresA(BigDecimal x) {
         assert null != x;
-        return !isDebutMoinsInfini() && getDebut().compareTo(x) > 0;
+        return estBorneAGauche() && getDebut().compareTo(x) > 0;
     }
 
     /**
@@ -153,14 +165,14 @@ public class Intervalle {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (isDebutMoinsInfini()) {
+        if (!estBorneAGauche()) {
             builder.append("]-\u221e");
         } else {
             builder.append(debutInclus ? "[" : "]");
             builder.append(debut);
         }
         builder.append("; ");
-        if (isFinPlusInfini()) {
+        if (!estBorneADroite()) {
             builder.append("+\u221e[");
         } else {
             builder.append(fin);
