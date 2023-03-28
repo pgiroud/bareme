@@ -48,7 +48,7 @@ public class BaremeTauxMarginalIntegrable implements Bareme {
 
     private Primitivable tauxMarginal;
     private final MethodeIntegration methode = new IntegrationExacte();
-    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CTS;
+    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
 
     /**
      * On précise ici une fonction "taux marginal" qui est intégrable c.-à-d. dont on connaît une primitive.

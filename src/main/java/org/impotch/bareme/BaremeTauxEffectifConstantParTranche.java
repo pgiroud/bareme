@@ -86,7 +86,4 @@ public final class BaremeTauxEffectifConstantParTranche extends
         return true;
     }
 
-    public List<TrancheBareme> obtenirTranches() {
-        return new ArrayList<TrancheBareme>(getTranches());
-    }
-}
+ }

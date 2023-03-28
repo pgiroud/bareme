@@ -31,16 +31,6 @@ public class BaremeTauxEffectifLineaireParTranche extends BaremeTauxEffectifParT
         setTranches(tranches);
     }
 
-    public BigDecimal getMontantImposablePremiereTranche() {
-        return getTranches().get(0).getIntervalle().getFin();
-    }
-
-    public BigDecimal getTauxMinimum() {
-        for (TrancheBareme tranche : getTranches()) {
-            if (0 < tranche.getTauxOuMontant().compareTo(ZERO)) return tranche.getTauxOuMontant();
-        }
-        throw new IllegalStateException("Il faut qu'il existe des tranches avant d'invoquer cette méthode !!");
-    }
 
     /* (non-Javadoc)
      * @see ch.ge.afc.calcul.impot.bareme.BaremeTauxEffectif#getTaux(java.math.BigDecimal)

@@ -48,27 +48,27 @@ import java.util.List;
  * Time: 19:09
  * To change this template use File | Settings | File Templates.
  */
-public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<BaremeTauxEffectifConstantParTrancheAssert, BaremeTauxEffectifConstantParTranche> {
+public class BaremeParTrancheAssert extends AbstractAssert<BaremeParTrancheAssert, BaremeParTranche> {
 
-    private BigDecimal offset;
-    private Comparator<BigDecimal> bigDecimalComparator;
+    private BigDecimal offset = BigDecimal.ZERO;
+    private Comparator<BigDecimal> bigDecimalComparator = new BigDecimalComparator(BigDecimal.ZERO);
 
 
-    public BaremeTauxEffectifConstantParTrancheAssert(BaremeTauxEffectifConstantParTranche actual) {
-        super(actual, BaremeTauxEffectifConstantParTrancheAssert.class);
+    public BaremeParTrancheAssert(BaremeParTranche actual) {
+        super(actual, BaremeParTrancheAssert.class);
     }
 
-    public BaremeTauxEffectifConstantParTrancheAssert tolerance(String offsetStr) {
+    public BaremeParTrancheAssert tolerance(String offsetStr) {
         offset = BigDecimalUtil.parseTaux(offsetStr);
         bigDecimalComparator = new BigDecimalComparator(offset);
         return this;
     }
 
-    public static BaremeTauxEffectifConstantParTrancheAssert assertThat(BaremeTauxEffectifConstantParTranche actual) {
-        return new BaremeTauxEffectifConstantParTrancheAssert(actual);
+    public static BaremeParTrancheAssert assertThat(BaremeTauxEffectifConstantParTranche actual) {
+        return new BaremeParTrancheAssert(actual);
     }
 
-    private void compareNbreTranche(BaremeTauxEffectifConstantParTranche expected) {
+    private void compareNbreTranche(BaremeParTranche expected) {
         int size = actual.obtenirTranches().size();
         int sizeExpected = expected.obtenirTranches().size();
         Assertions.assertThat(actual.obtenirTranches().size())
@@ -76,7 +76,7 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
                 .isEqualTo(sizeExpected);
     }
 
-    public BaremeTauxEffectifConstantParTrancheAssert isEqualTo(BaremeTauxEffectifConstantParTranche expected) {
+    public BaremeParTrancheAssert isEqualTo(BaremeParTranche expected) {
         compareNbreTranche(expected);
         List<TrancheBareme> tranches = actual.obtenirTranches();
         int i = 0;
@@ -88,15 +88,15 @@ public class BaremeTauxEffectifConstantParTrancheAssert extends AbstractAssert<B
             AssertionsForClassTypes.assertThat(intervalle)
                     .overridingErrorMessage("Sur la tranche %1$d, abscisse attendue %2$s mais est %3$s", i, intervalleAttendu, intervalle)
                     .isEqualTo(intervalleAttendu);
-            // Comparaison des ordonnées
-            BigDecimal ordonnee = tranche.getTauxOuMontant();
-            BigDecimal ordonneeAttendue = trancheAttendue.getTauxOuMontant();
-            AbstractBigDecimalAssert assertion = Assertions.assertThat(ordonnee)
-                    .overridingErrorMessage("Sur la tranche %1$d, dont l'intervalle est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, intervalle, ordonneeAttendue, ordonnee);
-            if (null != offset) {
-                assertion = assertion.usingComparator(bigDecimalComparator);
-            }
-            assertion.isEqualTo(ordonneeAttendue);
+            // Comparaison des valeurs
+            ValeursPremierOrdre ordonnee = tranche.getValeurs();
+            ValeursPremierOrdre ordonneeAttendue = trancheAttendue.getValeurs();
+
+            AssertionsForClassTypes.assertThat(ordonnee)
+                    .overridingErrorMessage("Sur la tranche %1$d, dont l'intervalle est %2$s, l'ordonnée attendue %3$s mais est %4$s", i, intervalle, ordonneeAttendue, ordonnee)
+                    .usingComparator((valeursPremierOrdre, t1) -> bigDecimalComparator.compare(valeursPremierOrdre.getValeur(),t1.getValeur()))
+                    .isEqualTo(ordonneeAttendue);
+
             i++;
         }
         return this;

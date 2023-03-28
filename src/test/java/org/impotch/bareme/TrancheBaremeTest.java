@@ -67,45 +67,45 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import static org.impotch.bareme.ConstructeurTranche.uneTranche;
+
 public class TrancheBaremeTest {
 
     @Test
     public void homothetie() {
-        Intervalle inter = new Intervalle.Cons().de(0).a(100).intervalle();
-        TrancheBareme tranche = new TrancheBareme(inter, BigDecimal.ONE);
-        TrancheBareme homothetique = tranche.homothetie(BigDecimal.valueOf(2), TypeArrondi.FRANC);
+        TrancheBareme tranche = uneTranche().de(0).a(100).valeur(BigDecimal.ONE).construire();
+        TrancheBareme homothetique = tranche.homothetie(BigDecimal.valueOf(2), TypeArrondi.UNITE_LA_PLUS_PROCHE);
         assertThat(homothetique.getIntervalle().getFin()).isEqualTo("200");
-        assertThat(homothetique.getTauxOuMontant()).isEqualTo("1");
+        // TODO à reprendre
+        assertThat(homothetique.getValeurs().getValeur()).isEqualTo("1");
 
-        homothetique = tranche.homothetie(new BigDecimal("1.23456"), TypeArrondi.CT);
+        homothetique = tranche.homothetie(new BigDecimal("1.23456"), TypeArrondi.CENTIEME_LE_PLUS_PROCHE);
         assertThat(homothetique.getIntervalle().getFin()).isEqualTo("123.46");
-        assertThat(homothetique.getTauxOuMontant()).isEqualTo("1");
+        // TODO à reprendre
+        assertThat(homothetique.getValeurs().getValeur()).isEqualTo("1");
     }
 
     @Test
     public void homothetieAvecRapportNull() {
-        Intervalle inter = new Intervalle.Cons().de(0).a(100).intervalle();
-        TrancheBareme tranche = new TrancheBareme(inter, BigDecimal.ONE);
+        TrancheBareme tranche = uneTranche().de(0).a(100).valeur(BigDecimal.ONE).construire();
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                () -> tranche.homothetie(null, TypeArrondi.FRANC)
+                () -> tranche.homothetie(null, TypeArrondi.UNITE_LA_PLUS_PROCHE)
         );
     }
 
     @Test
     public void homothetieAvecRapportZero() {
-        Intervalle inter = new Intervalle.Cons().de(0).a(100).intervalle();
-        TrancheBareme tranche = new TrancheBareme(inter, BigDecimal.ONE);
+        TrancheBareme tranche = uneTranche().de(0).a(100).valeur(BigDecimal.ONE).construire();
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                () -> tranche.homothetie(BigDecimal.ZERO, TypeArrondi.FRANC)
+                () -> tranche.homothetie(BigDecimal.ZERO, TypeArrondi.UNITE_LA_PLUS_PROCHE)
         );
     }
 
     @Test
     public void homothetieAvecRapportNegatif() {
-        Intervalle inter = new Intervalle.Cons().de(0).a(100).intervalle();
-        TrancheBareme tranche = new TrancheBareme(inter, BigDecimal.ONE);
+        TrancheBareme tranche = uneTranche().de(0).a(100).valeur(BigDecimal.ONE).construire();
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                () -> tranche.homothetie(BigDecimal.ONE.negate(), TypeArrondi.FRANC)
+                () -> tranche.homothetie(BigDecimal.ONE.negate(), TypeArrondi.UNITE_LA_PLUS_PROCHE)
         );
     }
 

@@ -50,7 +50,7 @@ public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 
     private LinkedList<Point> montants = new LinkedList<Point>();
     private boolean listeTriee = true;
-    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CTS;
+    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
     private boolean definiAvantBorneInf;
     private boolean definiApresBorneSup;
 

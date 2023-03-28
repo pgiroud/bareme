@@ -50,7 +50,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
     @Test
     public void uneSeuleTranche() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.FRANC);
+        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(ORIGINE);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         bareme.setDefiniAvantBorneInf(true);
@@ -73,7 +73,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
     @Test
     public void apresDernierTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.FRANC);
+        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(BigDecimal.ZERO, BigDecimal.ZERO);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         // Test sur borne supérieure
@@ -87,7 +87,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
     @Test
     public void avantPremiereTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.FRANC);
+        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(BigDecimal.ZERO, BigDecimal.ZERO);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         // Test sur borne inférieure
@@ -101,7 +101,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
     @Test
     public void pointDiscretiseNonOrdonne() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.FRANC);
+        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(MILLE, CENT);
         bareme.ajouterPointDiscretisation(ORIGINE);
         assertThat(bareme.calcul(CENT)).isEqualTo(BigDecimal.valueOf(10));
