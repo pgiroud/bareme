@@ -116,6 +116,11 @@ public class ConstructeurBareme {
 
     // ********************** Construction des intervalles *****************
 
+    private void ajouterTranchePrecedente() {
+        TrancheBareme tranche = consTranche.construire();
+        if (null != tranche) ajouterTranche(tranche);
+    }
+
     public ConstructeurBareme jusqua(BigDecimal borne) {
         consTranche.jusqua(borne);
         return this;
@@ -125,9 +130,17 @@ public class ConstructeurBareme {
         return jusqua(BigDecimal.valueOf(borne));
     }
 
+    public ConstructeurBareme puisJusqua(int borne) { return puisJusqua(BigDecimal.valueOf(borne)); }
+
+
+    public ConstructeurBareme puisJusqua(BigDecimal borne) {
+        ajouterTranchePrecedente();
+        consTranche.puisJusqua(borne);
+        return this;
+    }
+
     public ConstructeurBareme de(BigDecimal borne) {
-        TrancheBareme tranche = consTranche.construire();
-        if (null != tranche) ajouterTranche(tranche);
+        ajouterTranchePrecedente();
         consTranche.de(borne);
         return this;
     }
@@ -147,8 +160,7 @@ public class ConstructeurBareme {
 
 
     public ConstructeurBareme plusDe(BigDecimal borne) {
-        TrancheBareme tranche = consTranche.construire();
-        if (null != tranche) ajouterTranche(tranche);
+        ajouterTranchePrecedente();
         consTranche.plusDe(borne);
         return this;
     }

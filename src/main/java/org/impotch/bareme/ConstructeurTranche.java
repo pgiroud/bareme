@@ -38,6 +38,13 @@ class ConstructeurTranche {
         return this;
     }
 
+
+    public ConstructeurTranche puisJusqua(BigDecimal borne) {
+        consInter.puisJusqua(borne);
+        return this;
+    }
+
+
     public ConstructeurTranche de(BigDecimal borne) {
         consInter.de(borne);
         return this;

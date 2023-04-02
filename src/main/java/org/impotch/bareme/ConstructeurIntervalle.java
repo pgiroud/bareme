@@ -24,6 +24,7 @@ class ConstructeurIntervalle {
 
     private BigDecimal borneInferieureCourante;
     private BigDecimal borneSuperieureCourante;
+    private BigDecimal borneSuperieureIntervallePrecedent;
 
 
     public ConstructeurIntervalle fermeAGauche() {
@@ -39,6 +40,13 @@ class ConstructeurIntervalle {
     public ConstructeurIntervalle jusqua(BigDecimal borne) {
         constructible = true;
         return a(borne);
+    }
+
+    public ConstructeurIntervalle puisJusqua(BigDecimal borne) {
+        if (null == borneSuperieureIntervallePrecedent) {
+            throw new RuntimeException("Vous ne pouvez pas utiliser la méthode puisJusqua sur la première tranche !");
+        }
+        return de(borneSuperieureIntervallePrecedent).a(borne);
     }
 
     public  ConstructeurIntervalle de(BigDecimal borneInferieure) {
@@ -67,6 +75,7 @@ class ConstructeurIntervalle {
     }
 
     private void reinitialiseIntervalleCourant() {
+        borneSuperieureIntervallePrecedent = borneSuperieureCourante;
         constructible = false;
         this.borneInferieureCourante = null;
         this.borneSuperieureCourante = null;

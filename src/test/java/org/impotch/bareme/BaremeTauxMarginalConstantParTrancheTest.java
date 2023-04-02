@@ -77,4 +77,18 @@ public class BaremeTauxMarginalConstantParTrancheTest {
         assertThat(bareme.calcul(BigDecimal.valueOf(3000))).isEqualByComparingTo(BigDecimal.valueOf(300));
     }
 
+    @Test
+    public void puisJusqua() {
+        Bareme bareme =  unBaremeATauxMarginal()
+                .jusqua(200).taux("0 %")
+                .puisJusqua(1000).taux("5 %")
+                .puisJusqua(2000).taux("10 %")
+                .plusDe(2000).taux("15 %").construire();
+
+
+        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo(BigDecimal.valueOf(40));
+        assertThat(bareme.calcul(BigDecimal.valueOf(3000))).isEqualByComparingTo(BigDecimal.valueOf(290));
+
+    }
 }
