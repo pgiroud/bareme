@@ -30,6 +30,7 @@
  */
 package org.impotch.bareme;
 
+import org.impotch.util.TypeArrondi;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -78,17 +79,37 @@ public class BaremeTauxMarginalConstantParTrancheTest {
     }
 
     @Test
-    public void puisJusqua() {
+    public void baremeConstruitAvecDesPuis() {
         Bareme bareme =  unBaremeATauxMarginal()
                 .jusqua(200).taux("0 %")
                 .puisJusqua(1000).taux("5 %")
                 .puisJusqua(2000).taux("10 %")
-                .plusDe(2000).taux("15 %").construire();
+                .puis().taux("15 %").construire();
 
 
         assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualByComparingTo(BigDecimal.valueOf(40));
         assertThat(bareme.calcul(BigDecimal.valueOf(3000))).isEqualByComparingTo(BigDecimal.valueOf(290));
+
+    }
+
+    @Test
+    public void homothetieBaremeRevenuGE2023() {
+        BigDecimal indiceReference = new BigDecimal("102.9");
+        BigDecimal indiceRencherissement = new BigDecimal("106.2");
+        BigDecimal rapportRencherissement = indiceRencherissement.divide(indiceReference, 15, BigDecimal.ROUND_HALF_UP);
+
+        Bareme bareme =  unBaremeATauxMarginal()
+                .typeArrondiSurChaqueTranche(TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES)
+                .typeArrondiGlobal(TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES)
+                .jusqua(17493).taux("0 %")
+                .puisJusqua(21076).taux("8 %")
+                .puisJusqua(23184).taux("9 %")
+                .puis().taux("10 %")
+                .construire()
+                .homothetie(rapportRencherissement,TypeArrondi.UNITE_LA_PLUS_PROCHE);
+
+        assertThat(bareme.calcul(BigDecimal.valueOf(23928))).isEqualTo(new BigDecimal("491.70"));
 
     }
 }

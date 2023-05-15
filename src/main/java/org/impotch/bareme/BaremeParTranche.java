@@ -53,9 +53,12 @@ public abstract class BaremeParTranche implements Bareme {
     /**************************************************/
 
     private List<TrancheBareme> tranches = new ArrayList();
+    private TypeArrondi typeArrondiSurEntrant = TypeArrondi.UNITE_INF;
+
     private TypeArrondi typeArrondiSurChaqueTranche;
     private TypeArrondi typeArrondiGlobal;
     private BigDecimal seuil;
+
 
 
     /**************************************************/
@@ -88,6 +91,11 @@ public abstract class BaremeParTranche implements Bareme {
      */
     protected void setSeuil(BigDecimal seuil) {
         this.seuil = seuil;
+    }
+
+
+    protected void setTypeArrondiSurEntrant(TypeArrondi typeArrondiSurEntrant) {
+        this.typeArrondiSurEntrant = typeArrondiSurEntrant;
     }
 
     /**
@@ -130,7 +138,8 @@ public abstract class BaremeParTranche implements Bareme {
      */
     @Override
     public BigDecimal calcul(BigDecimal assiette) {
-        BigDecimal resultat = calculSansSeuil(assiette);
+        BigDecimal entrantArrondi = typeArrondiSurEntrant.arrondirMontant(assiette);
+        BigDecimal resultat = calculSansSeuil(entrantArrondi);
         if (null != seuil && 0 < seuil.compareTo(resultat)) return BigDecimalUtil.ZERO_2_DECIMALES;
         return resultat;
     }

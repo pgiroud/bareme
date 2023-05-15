@@ -15,8 +15,6 @@
  */
 package org.impotch.bareme;
 
-import org.impotch.util.BigDecimalUtil;
-
 import java.math.BigDecimal;
 
 class ConstructeurTranche {
@@ -28,10 +26,21 @@ class ConstructeurTranche {
 
     // ******************* Construction des intervalles *************************
 
-    public ConstructeurTranche fermeAGauche() {
-        consInter.fermeAGauche();
+    public ConstructeurTranche fermeAGaucheEtOuvreADroite() {
+        consInter.fermeAGaucheEtOuvreADroite();
         return this;
     }
+
+    public ConstructeurTranche ferme() {
+        consInter.ferme();
+        return this;
+    }
+
+    public ConstructeurTranche ouvreAGaucheEtFermeADroite() {
+        consInter.ouvreAGaucheEtFermeADroite();
+        return this;
+    }
+
 
     public ConstructeurTranche jusqua(BigDecimal borne) {
         consInter.jusqua(borne);
@@ -44,6 +53,10 @@ class ConstructeurTranche {
         return this;
     }
 
+    public ConstructeurTranche puis() {
+        consInter.puis();
+        return this;
+    }
 
     public ConstructeurTranche de(BigDecimal borne) {
         consInter.de(borne);
@@ -85,6 +98,9 @@ class ConstructeurTranche {
         return this;
     }
 
+    public boolean isConstructible() {
+        return consInter.isConstructible();
+    }
 
     public TrancheBareme construire() {
         // TODO PGI retourner Option

@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 class ConstructeurIntervalle {
 
     private boolean fermeAGauche = false;
+    private boolean fermeADroite = true;
+
     private boolean constructible = false;
 
     private BigDecimal borneInferieureCourante;
@@ -27,8 +29,22 @@ class ConstructeurIntervalle {
     private BigDecimal borneSuperieureIntervallePrecedent;
 
 
-    public ConstructeurIntervalle fermeAGauche() {
+    public ConstructeurIntervalle fermeAGaucheEtOuvreADroite() {
         this.fermeAGauche = true;
+        this.fermeADroite = false;
+        return this;
+    }
+
+    public ConstructeurIntervalle ouvreAGaucheEtFermeADroite() {
+        this.fermeAGauche = false;
+        this.fermeADroite = true;
+        return this;
+    }
+
+
+    public ConstructeurIntervalle ferme() {
+        this.fermeAGauche = true;
+        this.fermeADroite = true;
         return this;
     }
 
@@ -48,6 +64,15 @@ class ConstructeurIntervalle {
         }
         return de(borneSuperieureIntervallePrecedent).a(borne);
     }
+
+    public ConstructeurIntervalle puis() {
+        if (null == borneSuperieureIntervallePrecedent) {
+            throw new RuntimeException("Vous ne pouvez pas utiliser la méthode puisJusqua sur la première tranche !");
+        }
+        return plusDe(borneSuperieureIntervallePrecedent);
+    }
+
+
 
     public  ConstructeurIntervalle de(BigDecimal borneInferieure) {
         borneInferieureCourante =  borneInferieure;
@@ -81,6 +106,10 @@ class ConstructeurIntervalle {
         this.borneSuperieureCourante = null;
     }
 
+    public boolean isConstructible() {
+        return constructible;
+    }
+
     public Intervalle construire() {
         // TODO PGI Utiliser des Option
         if (!constructible) return null;
@@ -91,10 +120,10 @@ class ConstructeurIntervalle {
 
     private Intervalle construirePremierIntervalle(BigDecimal jusqua) {
         Intervalle.Cons cons = new Intervalle.Cons().deMoinsInfini().a(jusqua);
-        if (fermeAGauche) {
-            cons = cons.exclus();
-        } else {
+        if (fermeADroite) {
             cons = cons.inclus();
+        } else {
+            cons = cons.exclus();
         }
         return cons.intervalle();
     }
@@ -110,11 +139,14 @@ class ConstructeurIntervalle {
             }
         } else {
             if (fermeAGauche) {
-                cons = cons.de(de).inclus()
-                        .a(a).exclus();
+                cons = cons.de(de).inclus();
             } else {
-                cons = cons.de(de).exclus()
-                        .a(a).inclus();
+                cons = cons.de(de).exclus();
+            }
+            if (fermeADroite) {
+                cons = cons.a(a).inclus();
+            } else {
+                cons = cons.a(a).exclus();
             }
         }
         return cons.intervalle();

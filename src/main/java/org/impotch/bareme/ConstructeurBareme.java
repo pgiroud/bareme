@@ -48,11 +48,16 @@ public class ConstructeurBareme {
 
     private TypeArrondi typeArrondiSurChaqueTranche = TypeArrondi.CENTIEME_LE_PLUS_PROCHE;
     private TypeArrondi typeArrondiGlobal = TypeArrondi.CENTIEME_LE_PLUS_PROCHE;
+
+    private TypeArrondi typeArrondiSurEntrant = TypeArrondi.UNITE_INF;
     private BigDecimal seuil;
 
     private final ConstructeurTranche consTranche = new ConstructeurTranche();
 
     private BigDecimal valeur = BigDecimal.ZERO;
+
+    private BigDecimal taux = BigDecimal.ZERO;
+
 
     /**
      * Permet la construction des barèmes constants par tranche que
@@ -61,19 +66,11 @@ public class ConstructeurBareme {
      * Par défaut, les intervalles sont ouverts à gauche et fermés à droite c.-à-d.
      * que l'intervalle dont le début est 3 et la fin est 4 ne comprend pas 3 mais comprend 4.
      */
-    public ConstructeurBareme(TypeBareme type) {
+    private ConstructeurBareme(TypeBareme type) {
         super();
         this.type = type;
     }
 
-    /**
-     * Avec une liste de tranche prédéfinie. Ne devrait pas être utilisé très souvent !
-     * @param tranches
-     */
-    public ConstructeurBareme(TypeBareme type, List<TrancheBareme> tranches) {
-        this(type);
-        this.tranches = tranches;
-    }
 
     public static ConstructeurBareme unBareme() {
         return new ConstructeurBareme(TypeBareme.BAREME);
@@ -93,6 +90,7 @@ public class ConstructeurBareme {
         return unBaremeATauxMarginal(BigDecimal.ZERO);
     }
 
+
     public static ConstructeurBareme unBaremeATauxMarginal(BaremeParTranche bareme) {
         return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_MARGINAL)
                 .setTranches(bareme.getTranches())
@@ -100,6 +98,7 @@ public class ConstructeurBareme {
                 .typeArrondiSurChaqueTranche(bareme.getTypeArrondiSurChaqueTranche())
                 .seuil(bareme.getSeuil());
     }
+
 
     public BaremeParTranche construire() {
         BaremeParTranche bareme = null;
@@ -109,6 +108,7 @@ public class ConstructeurBareme {
                     bareme = ModeCalcul.CONSTANT == mode ? new BaremeTauxEffectifConstantParTranche() : new BaremeTauxEffectifLineaireParTranche();
             case BAREME_A_TAUX_MARGINAL -> bareme = new BaremeTauxMarginalConstantParTranche();
         }
+        if (consTranche.isConstructible())  ajouterTranche(consTranche.construire());
         completerBareme(bareme);
         return bareme;
     }
@@ -139,6 +139,12 @@ public class ConstructeurBareme {
         return this;
     }
 
+    public ConstructeurBareme puis() {
+        ajouterTranchePrecedente();
+        consTranche.puis();
+        return this;
+    }
+
     public ConstructeurBareme de(BigDecimal borne) {
         ajouterTranchePrecedente();
         consTranche.de(borne);
@@ -158,6 +164,9 @@ public class ConstructeurBareme {
         return a(BigDecimal.valueOf(borne));
     }
 
+    public ConstructeurBareme a(String valeur) {
+        return a(new BigDecimal(valeur));
+    }
 
     public ConstructeurBareme plusDe(BigDecimal borne) {
         ajouterTranchePrecedente();
@@ -172,6 +181,7 @@ public class ConstructeurBareme {
 
     public ConstructeurBareme valeur(BigDecimal valeur) {
         consTranche.valeur(valeur);
+//        valeurEnDebutTranche = valeur;
         return this;
     }
 
@@ -193,15 +203,14 @@ public class ConstructeurBareme {
         return increment(BigDecimalUtil.parse(taux));
     }
 
-
     public ConstructeurBareme taux(String taux) {
-        BigDecimal tauxBD = BigDecimalUtil.parseTaux(taux);
+        this.taux = BigDecimalUtil.parseTaux(taux);
         if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
             BigDecimal valeurEnDebutDeTranche = this.valeur;
             // TODO PGI recalculer la valeur en fin d'intervalle
-            return valeur(valeurEnDebutDeTranche).increment(tauxBD);
+            return valeur(valeurEnDebutDeTranche).increment(this.taux);
         } else {
-            return valeur(tauxBD);
+            return valeur(this.taux);
         }
 
     }
@@ -251,22 +260,6 @@ public class ConstructeurBareme {
 
     public final ConstructeurBareme tranche(BigDecimal de, BigDecimal a, BigDecimal valeur, BigDecimal pente) {
         ajouterTranche(de(de).a(a).valeur(valeur).increment(pente).consTranche.construire());
-//        if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
-//
-//        } else {
-//            this.mode = ModeCalcul.LINEAIRE;
-//            if (tranches.size() > 0) {
-//                TrancheBareme derniereTranche = tranches.get(tranches.size() - 1);
-//                if (0 == derniereTranche.getValeur().compareTo(valeur)) {
-//                    Intervalle inter = intervalle.union(derniereTranche.getIntervalle());
-//                    tranches.set(tranches.size() - 1, consTranche.construireTranche(inter, valeur, pente));
-//                } else {
-//                    ajouterTranche(consTranche.construireTranche(de, a, valeur, pente));
-//                }
-//            } else {
-//                ajouterTranche(consTranche.construireTranche(de, a, valeur, pente));
-//            }
-//        }
         return this;
     }
 
@@ -277,7 +270,6 @@ public class ConstructeurBareme {
 
 
     public ConstructeurBareme tranche(BigDecimal de, BigDecimal a, BigDecimal taux) {
-//        // TODO Reprendre cette partie qui suppose une cosntruction ordonnée des tranches.
         de(de).a(a);
         if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
             increment(taux);
@@ -285,23 +277,6 @@ public class ConstructeurBareme {
             valeur(taux);
         }
         ajouterTranche(consTranche.construire());
-//        Intervalle intervalle = consInter.construireIntervalle(de, a);
-//        if (TypeBareme.BAREME_A_TAUX_EFFECTIF == type) {
-//            if (tranches.size() > 0) {
-//                TrancheBareme derniereTranche = tranches.get(tranches.size() - 1);
-//                if (0 == derniereTranche.getValeur().compareTo(taux)) {
-//                    Intervalle inter = intervalle.union(derniereTranche.getIntervalle());
-//                    tranches.set(tranches.size() - 1, consTranche.construireTranche(inter, taux));
-//                    return this;
-//                }
-//            }
-//            ajouterTranche(consTranche.construireTranche(de, a, taux));
-//            return this;
-//        }
-//        if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
-//            // TODO
-//            return this;
-//        }
         return this;
     }
 
@@ -318,21 +293,23 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme derniereTranche(BigDecimal depuis, BigDecimal taux) {
-
         plusDe(depuis);
         if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
             increment(taux);
         } else {
             valeur(taux);
         }
-//        if (tranches.size() > 0) {
-//            TrancheBareme derniereTranche = tranches.get(tranches.size() - 1);
-//            if (0 == derniereTranche.getValeur().compareTo(taux)) {
-//                Intervalle inter = intervalle.union(derniereTranche.getIntervalle());
-//                tranches.set(tranches.size() - 1, consTranche.construireTranche(inter, taux));
-//                return this;
-//            }
-//        }
+        ajouterTranche(consTranche.construire());
+        return this;
+    }
+
+    public ConstructeurBareme derniereTranche(BigDecimal depuis, BigDecimal valeurEnDebutDeTranche, BigDecimal taux) {
+        plusDe(depuis);
+        if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
+            valeur(valeurEnDebutDeTranche).increment(taux);
+        } else {
+            valeur(taux);
+        }
         ajouterTranche(consTranche.construire());
         return this;
     }
@@ -346,8 +323,8 @@ public class ConstructeurBareme {
     }
 
     protected void completerBareme(BaremeParTranche bareme) {
-        ajouterTranche(consTranche.construire());
         bareme.setTranches(tranches);
+        bareme.setTypeArrondiSurEntrant(this.typeArrondiSurEntrant);
         bareme.setTypeArrondiSurChaqueTranche(typeArrondiSurChaqueTranche);
         bareme.setTypeArrondiGlobal(typeArrondiGlobal);
         bareme.setSeuil(seuil);
@@ -397,6 +374,11 @@ public class ConstructeurBareme {
 
     // ********************** Construction globales ************************
 
+    public ConstructeurBareme typeArrondiSurEntrant(TypeArrondi typeArrondi) {
+        this.typeArrondiSurEntrant = typeArrondi;
+        return this;
+    }
+
     public ConstructeurBareme typeArrondiSurChaqueTranche(TypeArrondi typeArrondi) {
         this.typeArrondiSurChaqueTranche = typeArrondi;
         return this;
@@ -418,7 +400,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme fermeAGauche() {
-        consTranche.fermeAGauche();
+        consTranche.fermeAGaucheEtOuvreADroite();
         return this;
     }
 

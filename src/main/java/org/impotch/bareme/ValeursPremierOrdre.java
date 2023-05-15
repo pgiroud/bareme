@@ -34,6 +34,10 @@ class ValeursPremierOrdre {
         return valeur;
     }
 
+    ValeursPremierOrdre setValeurOrdre0(BigDecimal valeur) {
+        return new ValeursPremierOrdre(valeur,this.increment);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

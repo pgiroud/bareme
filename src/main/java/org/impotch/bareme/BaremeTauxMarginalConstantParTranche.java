@@ -51,10 +51,25 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
                 .filter(t -> t.getIntervalle().encadre(assiette))
                 .findFirst().orElseThrow().integre(assiette);
 
+        resultat = getTypeArrondiSurChaqueTranche().arrondirMontant(resultat);
         return getTypeArrondiGlobal().arrondirMontant(resultat);
     }
 
+    private void resetValeurs() {
+        List<TrancheBareme> tranches = getTranches();
+        for (int i = 1; i < tranches.size(); i++) {
+            TrancheBareme tranchePrecedente = tranches.get(i-1);
+            TrancheBareme tranche = tranches.get(i);
+            tranches.set(i,tranche.setValeurOrdre0(calcul(tranchePrecedente.getIntervalle().getFin())));
+        }
+    }
 
+    @Override
+    public BaremeTauxMarginalConstantParTranche homothetie(BigDecimal taux, TypeArrondi typeArrondi) {
+        BaremeTauxMarginalConstantParTranche bareme = (BaremeTauxMarginalConstantParTranche)super.homothetie(taux, typeArrondi);
+        bareme.resetValeurs();
+        return bareme;
+    }
 
     @Override
     protected BaremeParTranche newBaremeParTranche() {

@@ -71,6 +71,10 @@ public class TrancheBareme {
 
     public ValeursPremierOrdre getValeurs() { return valeurs; }
 
+    TrancheBareme setValeurOrdre0(BigDecimal valeur) {
+        return new TrancheBareme(this.intervalle,this.valeurs.setValeurOrdre0(valeur));
+    }
+
     /**************************************************/
     /******************* Méthodes *********************/
     /**************************************************/
@@ -84,9 +88,6 @@ public class TrancheBareme {
         return new TrancheBareme(this.getIntervalle().union(tranche.intervalle),this.valeurs);
     }
 
-    protected TrancheBareme newTranche(Intervalle intervalle, ValeursPremierOrdre valeurs) {
-        return new TrancheBareme(intervalle,valeurs);
-    }
 
     /**
      * Une tranche peut être translatée. Translater une tranche consiste à
@@ -99,13 +100,13 @@ public class TrancheBareme {
     public TrancheBareme homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
         if (!BigDecimalUtil.isStrictementPositif(rapport))
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
-        return newTranche(intervalle.homothetie(rapport,typeArrondi), this.getValeurs());
+        return new TrancheBareme(intervalle.homothetie(rapport,typeArrondi), this.getValeurs());
     }
 
     public TrancheBareme homothetieValeur(BigDecimal rapport, TypeArrondi typeArrondi) {
         if (!BigDecimalUtil.isStrictementPositif(rapport))
             throw new IllegalArgumentException("Le rapport d'homothétie '" + rapport + "' ne peut pas être négatif ou null !!");
-        return newTranche(this.intervalle, getValeurs().multiplie(rapport,typeArrondi));
+        return new TrancheBareme(this.intervalle, getValeurs().multiplie(rapport,typeArrondi));
     }
 
 
