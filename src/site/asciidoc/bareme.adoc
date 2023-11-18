@@ -87,13 +87,13 @@ Un exemple de construction d'un barème à taux effectif constant par tranche :
 
 [source,java]
 ----
-        ConstructeurBareme constructeur = new ConstructeurBareme()
-                .typeArrondiSurChaqueTranche(TypeArrondi.FRANC)
-                .premiereTranche(1000, "1 %")
-                .tranche(1000,2000, "2 %")
-                .derniereTranche(2000,"3 %");
+import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxEffectif;
 
-        Bareme bareme = constructeur.construireBaremeTauxEffectifConstantParTranche();
+Bareme bareme = unBaremeATauxEffectif()
+                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .jusqua(1000).taux("1 %")
+                .de(1000).a(2000).taux("2 %")
+                .plusDe(2000).taux("3 %").construire();
 ----
 
 Si on calcule avec ce barème, on obtient :
@@ -113,17 +113,35 @@ la valeur augmente de 20 !
 
 === les barèmes à taux marginal constant par tranche
 
-Par exemple, le https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France[barème] de l'impôt sur le revenu français de 2018
+On construit un tel barème en spécifiant des tranches sur un intervalle
 
 [source,java]
 ----
-    BaremeTauxMarginalConstantParTranche irFrance2018 = new ConstructeurBaremeTauxMarginal()
-        .premiereTranche(  9964, " 0 %")
-        .tranche( 9964,27519," 14 %")
-        .tranche( 27519,73779," 30 %")
-        .tranche(73779,156244, "41 %")
-        .derniereTranche(156244,"45 %")
-        .typeArrondiSurChaqueTranche(TypeArrondi.FRANC_INF)
-        .construire();
+import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxMarginal;
+
+Bareme bareme =  unBaremeATauxMarginal()
+                .de(0).a(1000).taux("5 %")
+                .de(1000).a(2000).taux("10 %")
+                .plusDe(2000).taux("15 %").construire();
 ----
-Dans le cas où le barème est défini par une seul tranche, on pourra utiliser
+
+Avec le barème ainsi défini, le résultat si on l'applique à un montant de 4000.00 serait :
+
+(1000-0) * 5% + (2000-1000) * 10% + (4000-2000)* 15%
+
+Soit
+
+50  + 100 + 300 = 450
+
+On constate que la borne supérieure d’un intervalle est toujours égale à la borne inférieur de l’intervalle suivant (il ne peut y avoir de trou contrairement à la façon dont sont décrits ces barèmes dans les lois).
+Une méthode plus simple est de construire le barème de la fçon suivante
+
+[source,java]
+----
+import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxMarginal;
+
+Bareme bareme =  unBaremeATauxMarginal()
+                .jusqua(1000).taux("5 %")
+                .puisJusqua(2000).taux("10 %")
+                .puis().taux("15 %").construire();
+----
