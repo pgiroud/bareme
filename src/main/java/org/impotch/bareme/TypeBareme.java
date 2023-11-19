@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of impotch/bareme.
  *
  * impotch/bareme is free software: you can redistribute it and/or modify
