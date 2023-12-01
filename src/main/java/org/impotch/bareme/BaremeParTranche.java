@@ -57,8 +57,9 @@ public abstract class BaremeParTranche implements Bareme {
         this.tranches = tranches;
     }
 
-    List<TrancheBareme> obtenirTranches() {
-        return new ArrayList<TrancheBareme>(getTranches());
+    public List<TrancheBareme> obtenirTranches() {
+        // Pas de risque de modifications : les tranches sont immutables
+        return new ArrayList<>(getTranches());
     }
 
     /**
