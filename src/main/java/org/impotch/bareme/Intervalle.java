@@ -99,13 +99,13 @@ public class Intervalle {
     public boolean adjacent(Intervalle inter) {
         if (null == this.fin) {
             if (null == this.debut) return false;
-            return this.debut.equals(inter.getFin());
+            return 0 == this.debut.compareTo(inter.getFin());
         }
         if (null == this.debut) {
-            return this.fin.equals(inter.debut);
+            return 0 == this.getFin().compareTo(inter.getDebut());
         }
-        return 0 == this.getFin().compareTo(inter.getDebut())
-                || this.debut.equals(inter.getFin());
+        return (null != inter.getDebut() && 0 == this.getFin().compareTo(inter.getDebut()))
+                || (null != inter.getFin() && 0 == this.debut.compareTo(inter.getFin()));
     }
 
     public boolean valeursInferieuresA(BigDecimal x) {

@@ -18,6 +18,7 @@ package org.impotch.bareme;
 import org.impotch.util.TypeArrondi;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Objects;
 
 class ValeursPremierOrdre {
@@ -43,7 +44,14 @@ class ValeursPremierOrdre {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ValeursPremierOrdre that = (ValeursPremierOrdre) o;
-        return Objects.equals(valeur, that.valeur) && Objects.equals(increment, that.increment);
+        Comparator<BigDecimal> comparaisonBD = new Comparator<BigDecimal>() {
+            @Override
+            public int compare(BigDecimal o1, BigDecimal o2) {
+                return o1.compareTo(o2);
+            }
+        };
+        return 0 == Objects.compare(valeur, that.valeur,comparaisonBD)
+                && 0 == Objects.compare(increment, that.increment, comparaisonBD);
     }
 
     @Override
