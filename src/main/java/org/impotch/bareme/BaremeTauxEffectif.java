@@ -25,6 +25,10 @@ import java.math.BigDecimal;
  */
 public interface BaremeTauxEffectif extends Bareme {
 
+    default BigDecimal getTaux(long assiette) {
+        return getTaux(BigDecimal.valueOf(assiette));
+    }
+
     /**
      * Retourne le taux effectif en fournissant l'assiette
      * @param assiette le revenu déterminant ou autre assiette
