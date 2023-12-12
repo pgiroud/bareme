@@ -95,6 +95,34 @@ public class BaremeTauxMarginalConstantParTrancheTest {
                 .homothetie(rapportRencherissement,TypeArrondi.UNITE_LA_PLUS_PROCHE);
 
         assertThat(bareme.calcul(BigDecimal.valueOf(23928))).isEqualTo(new BigDecimal("491.70"));
+    }
+
+
+    @Test
+    public void tauxMaximalAvecUneTranche() {
+        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+                .plusDe(0).taux("10 %").construire();
+        assertThat(bareme.getTauxMaximum()).isEqualByComparingTo("0.10");
+    }
+
+    @Test
+    public void tauxMaximalAvecQuatreTranches() {
+        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+                .jusqua(200).taux("0 %")
+                .puisJusqua(1000).taux("5 %")
+                .puisJusqua(2000).taux("10 %")
+                .puis().taux("15 %").construire();
+        assertThat(bareme.getTauxMaximum()).isEqualByComparingTo("0.15");
+    }
+
+    @Test
+    public void tauxMaximalAvecDerniereTrancheBorneeADroite() {
+        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+                .de(0).a(1000).taux("5 %")
+                .de(1000).a(2000).taux("10 %")
+                .construire();
+
+        assertThat(bareme.getTauxMaximum()).isEqualByComparingTo("0.075");
 
     }
 }

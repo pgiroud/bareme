@@ -35,6 +35,10 @@ class ValeursPremierOrdre {
         return valeur;
     }
 
+    BigDecimal getIncrement() {
+        return increment;
+    }
+
     ValeursPremierOrdre setValeurOrdre0(BigDecimal valeur) {
         return new ValeursPremierOrdre(valeur,this.increment);
     }

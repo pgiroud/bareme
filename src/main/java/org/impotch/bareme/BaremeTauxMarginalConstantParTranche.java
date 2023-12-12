@@ -19,12 +19,13 @@ import java.math.BigDecimal;
 
 import static java.math.BigDecimal.ZERO;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.impotch.util.TypeArrondi;
 
-public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche implements Bareme {
+public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche implements BaremeTauxMarginal {
 
     /**************************************************/
     /******************* Méthodes *********************/
@@ -64,5 +65,25 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
     @Override
     public String toString() {
         return "BaremeTauxMarginalConstantParTranche spécialisation de " + super.toString();
+    }
+
+    @Override
+    public BigDecimal getTauxMaximum() {
+        List<TrancheBareme> tranches = getTranches();
+        if (tranches.size() > 0) {
+            TrancheBareme derniereTranche = tranches.get(tranches.size()-1);
+            if (!derniereTranche.getIntervalle().estBorneADroite()) {
+                return derniereTranche.getValeurs().getIncrement();
+            } else {
+                // Si la dernière tranche est bornée à droite
+                BigDecimal borne = derniereTranche.getIntervalle().getFin();
+                BigDecimal valeur = calcul(borne);
+                return valeur.divide(borne,10, RoundingMode.HALF_UP);
+            }
+        }
+        if (tranches.size() == 0) {
+            throw new IllegalStateException("Impossible de définir le taux maximal, il n’y a pas de tranches !!  ");
+        }
+        return null;
     }
 }
