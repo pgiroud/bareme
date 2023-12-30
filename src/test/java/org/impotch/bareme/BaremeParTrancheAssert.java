@@ -37,12 +37,12 @@ public class BaremeParTrancheAssert extends AbstractAssert<BaremeParTrancheAsser
     }
 
     public BaremeParTrancheAssert tolerance(String offsetStr) {
-        offset = BigDecimalUtil.parseTaux(offsetStr);
+        offset = BigDecimalUtil.parse(offsetStr);
         bigDecimalComparator = new BigDecimalComparator(offset);
         return this;
     }
 
-    public static BaremeParTrancheAssert assertThat(BaremeTauxEffectifConstantParTranche actual) {
+    public static BaremeParTrancheAssert assertThat(BaremeParTranche actual) {
         return new BaremeParTrancheAssert(actual);
     }
 
