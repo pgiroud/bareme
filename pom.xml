@@ -5,7 +5,7 @@
     <!-- The Basics -->
     <groupId>org.impotch</groupId>
     <artifactId>bareme</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1-snapshot</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -33,9 +33,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.jupiter.version>5.9.1</junit.jupiter.version>
         <assertj.version>3.23.1</assertj.version>
-        <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
-        <asciidoctorj.version>2.2.4</asciidoctorj.version>
-        <asciidoctorj.diagram.version>2.2.4</asciidoctorj.diagram.version>
+        <asciidoctor.maven.plugin.version>2.2.5</asciidoctor.maven.plugin.version>
+        <asciidoctorj.version>2.5.10</asciidoctorj.version>
+        <asciidoctorj.diagram.version>2.2.14</asciidoctorj.diagram.version>
     </properties>
 
     <!-- Build Settings -->
@@ -123,6 +123,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
+                <!--version>4.0.0-M14-SNAPSHOT</version-->
                 <configuration>
                     <!-- disable generateReports if you don't want to include the built-in reports -->
                     <generateReports>true</generateReports>
@@ -152,7 +153,7 @@
 					<dependency>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctorj-diagram</artifactId>
-						<version>${asciidoctorj.version}</version>
+						<version>${asciidoctorj.diagram.version}</version>
 					</dependency>
                 </dependencies>
             </plugin>
@@ -185,8 +186,9 @@
                 <version>3.3.1</version>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.5.0</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

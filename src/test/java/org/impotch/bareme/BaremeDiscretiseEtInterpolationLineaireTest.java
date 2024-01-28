@@ -17,13 +17,12 @@ package org.impotch.bareme;
 
 
 import java.math.BigDecimal;
-
-
-import org.impotch.util.TypeArrondi;
 import org.junit.jupiter.api.Test;
 
+import static java.math.BigDecimal.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.impotch.util.TypeArrondi.UNITE_LA_PLUS_PROCHE;
 
 public class BaremeDiscretiseEtInterpolationLineaireTest {
 
@@ -35,7 +34,7 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
     @Test
     public void uneSeuleTranche() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
+        bareme.setTypeArrondi(UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(ORIGINE);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         bareme.setDefiniAvantBorneInf(true);
@@ -46,49 +45,49 @@ public class BaremeDiscretiseEtInterpolationLineaireTest {
         assertThat(bareme.calcul(CENT)).isEqualTo(CENT);
         // Test sur borne inférieure
         //  Une seule tranche borne inférieure
-        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("0");
+        assertThat(bareme.calcul(ZERO)).isEqualTo("0");
         // Test sur montant < borne inférieure
-        assertThat(bareme.calcul(BigDecimal.valueOf(-1000))).isEqualTo("0");
+        assertThat(bareme.calcul(-1000)).isEqualTo("0");
         // Test sur borne supérieure
         assertThat(bareme.calcul(MILLE)).isEqualTo(MILLE);
         // Test sur montant > borne supérieure
-        assertThat(bareme.calcul(BigDecimal.valueOf(1000000))).isEqualTo(MILLE);
+        assertThat(bareme.calcul(1_000_000)).isEqualTo(MILLE);
     }
 
     @Test
     public void apresDernierTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
-        bareme.ajouterPointDiscretisation(BigDecimal.ZERO, BigDecimal.ZERO);
+        bareme.setTypeArrondi(UNITE_LA_PLUS_PROCHE);
+        bareme.ajouterPointDiscretisation(ZERO, ZERO);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         // Test sur borne supérieure
         assertThat(bareme.calcul(MILLE)).isEqualTo(MILLE);
         // Test sur montant > borne supérieure
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                () -> bareme.calcul(new BigDecimal(1001))
+                () -> bareme.calcul(1001)
         );
     }
 
     @Test
     public void avantPremiereTrancheNonAcceptable() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
-        bareme.ajouterPointDiscretisation(BigDecimal.ZERO, BigDecimal.ZERO);
+        bareme.setTypeArrondi(UNITE_LA_PLUS_PROCHE);
+        bareme.ajouterPointDiscretisation(ZERO, ZERO);
         bareme.ajouterPointDiscretisation(MILLE, MILLE);
         // Test sur borne inférieure
-        assertThat(bareme.calcul(BigDecimal.ZERO)).isEqualTo("0");
+        assertThat(bareme.calcul(ZERO)).isEqualTo("0");
         // Test sur montant < borne inférieure
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                () -> bareme.calcul(new BigDecimal(-1))
+                () -> bareme.calcul(-1)
         );
     }
 
     @Test
     public void pointDiscretiseNonOrdonne() {
         BaremeDiscretiseEtInterpolationLineaire bareme = new BaremeDiscretiseEtInterpolationLineaire();
-        bareme.setTypeArrondi(TypeArrondi.UNITE_LA_PLUS_PROCHE);
+        bareme.setTypeArrondi(UNITE_LA_PLUS_PROCHE);
         bareme.ajouterPointDiscretisation(MILLE, CENT);
         bareme.ajouterPointDiscretisation(ORIGINE);
-        assertThat(bareme.calcul(CENT)).isEqualTo(BigDecimal.valueOf(10));
+        assertThat(bareme.calcul(CENT)).isEqualTo("10");
     }
 }

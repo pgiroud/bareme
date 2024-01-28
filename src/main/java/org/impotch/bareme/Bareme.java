@@ -27,9 +27,13 @@ public interface Bareme {
 
     /**
      * Calcule le montant par application du barème.
-     * @param pAssiette L'assiette fiscale
+     * @param assiette L'assiette fiscale
      * @return le montant calculé qui est en général arrondi.
      */
-    BigDecimal calcul(BigDecimal pAssiette);
+    BigDecimal calcul(BigDecimal assiette);
+
+    default BigDecimal calcul(long assiette) {
+        return this.calcul(BigDecimal.valueOf(assiette));
+    }
 
 }

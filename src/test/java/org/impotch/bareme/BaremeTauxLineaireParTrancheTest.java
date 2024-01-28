@@ -17,8 +17,6 @@ package org.impotch.bareme;
 
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxEffectif;
 
@@ -32,9 +30,9 @@ public class BaremeTauxLineaireParTrancheTest {
                 .plusDe(2000).taux("2 %").increment("0.0015 %")
                 .construire();
 
-        assertThat(bareme.calcul(BigDecimal.valueOf(1000))).isEqualTo(new BigDecimal("10.00"));
-        assertThat(bareme.calcul(BigDecimal.valueOf(2000))).isEqualTo(new BigDecimal("40.00"));
-        assertThat(bareme.calcul(BigDecimal.valueOf(3000))).isEqualTo(new BigDecimal("105.00"));
+        assertThat(bareme.calcul(1000)).isEqualTo("10.00");
+        assertThat(bareme.calcul(2000)).isEqualTo("40.00");
+        assertThat(bareme.calcul(3000)).isEqualTo("105.00");
 
     }
 

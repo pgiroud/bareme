@@ -106,7 +106,7 @@ Un exemple de construction d'un barème à taux effectif constant par tranche :
 import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxEffectif;
 
 Bareme bareme = unBaremeATauxEffectif()
-                .typeArrondiSurChaqueTranche(TypeArrondi.UNITE_LA_PLUS_PROCHE)
+                .typeArrondiSurChaqueTranche(UNITE_LA_PLUS_PROCHE)
                 .jusqua(1000).taux("1 %")
                 .de(1000).a(2000).taux("2 %")
                 .plusDe(2000).taux("3 %").construire();
