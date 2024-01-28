@@ -31,12 +31,12 @@ public class TrancheBaremeTest {
     public void homothetie() {
         TrancheBareme tranche = uneTranche().de(0).a(100).valeur(BigDecimal.ONE).construire();
         TrancheBareme homothetique = tranche.homothetie(BigDecimal.valueOf(2), TypeArrondi.UNITE_LA_PLUS_PROCHE);
-        assertThat(homothetique.getIntervalle().getFin()).isEqualTo("200");
+        assertThat(homothetique.getIntervalle().getFin().get()).isEqualTo("200");
         // TODO à reprendre
         assertThat(homothetique.getValeurs().getValeur()).isEqualTo("1");
 
         homothetique = tranche.homothetie(new BigDecimal("1.23456"), TypeArrondi.CENTIEME_LE_PLUS_PROCHE);
-        assertThat(homothetique.getIntervalle().getFin()).isEqualTo("123.46");
+        assertThat(homothetique.getIntervalle().getFin().get()).isEqualTo("123.46");
         // TODO à reprendre
         assertThat(homothetique.getValeurs().getValeur()).isEqualTo("1");
     }

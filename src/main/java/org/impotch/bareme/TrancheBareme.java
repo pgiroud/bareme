@@ -18,6 +18,7 @@ package org.impotch.bareme;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.impotch.util.BigDecimalUtil;
 import org.impotch.util.TypeArrondi;
@@ -99,25 +100,15 @@ public class TrancheBareme {
     public BigDecimal calcul(BigDecimal montant) {
         if (intervalle.encadre(montant)) {
             BigDecimal largeur = intervalle.estBorneAGauche() ?
-                    montant.subtract(getIntervalle().getDebut()) : BigDecimal.ZERO;
+                    montant.subtract(getIntervalle().getDebut().get()) : BigDecimal.ZERO;
             return getValeurs().calcul(largeur);
         }
         return BigDecimal.ZERO;
     }
 
 
-
     public BigDecimal integre(BigDecimal montant) {
-        BigDecimal debut = intervalle.estBorneAGauche() ? intervalle.getDebut() : BigDecimal.ZERO;
-        BigDecimal largeur = BigDecimal.ZERO;
-        if (intervalle.valeursInferieuresA(montant)) {
-            largeur = intervalle.longueur();
-        }
-        if (intervalle.encadre(montant)) {
-            largeur = new Intervalle.Cons().de(debut).a(montant).intervalle().longueur();
-
-        }
-        return getValeurs().calcul(largeur);
+        return intervalle.longueurAvant(DecimalEtendu.de(montant)).map(l -> getValeurs().calcul(l)).orElse(BigDecimal.ZERO);
     }
 
 

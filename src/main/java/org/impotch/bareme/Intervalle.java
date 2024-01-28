@@ -18,104 +18,113 @@ package org.impotch.bareme;
 import org.impotch.util.TypeArrondi;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.Optional;
+
+import static org.impotch.bareme.DecimalEtendu.INFINI_POSITIF;
+import static org.impotch.bareme.DecimalEtendu.INFINI_NEGATIF;
 
 public class Intervalle {
 
-    public static final Intervalle TOUT = new Intervalle(null,true,null,true);
+    public static final Intervalle TOUT = new Intervalle(INFINI_NEGATIF,true, INFINI_POSITIF,true);
 
-    private final BigDecimal debut;
+    private final DecimalEtendu debut;
     private final boolean debutInclus;
-    private final BigDecimal fin;
+    private final DecimalEtendu fin;
     private final boolean finInclus;
 
-    private Intervalle(BigDecimal debut, boolean debutInclus, BigDecimal fin , boolean finInclus) {
+    private Intervalle(DecimalEtendu debut, boolean debutInclus, DecimalEtendu fin , boolean finInclus) {
         this.debut = debut;
         this.debutInclus = debutInclus;
         this.fin = fin;
         this.finInclus = finInclus;
     }
 
-    public BigDecimal getMilieu() {
-        if (null == debut || null == fin) throw new UnsupportedOperationException("Impossible de retourner le milieu de " + this);
-        return fin.add(debut).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP);
+
+    private Intervalle(BigDecimal debut, boolean debutInclus, BigDecimal fin , boolean finInclus) {
+        this(DecimalEtendu.de(debut),debutInclus,DecimalEtendu.de(fin),finInclus);
+    }
+
+    public Optional<BigDecimal> getMilieu() {
+        return fin.valeur().flatMap(
+                f -> debut.valeur().map(d -> f.add(d).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP)));
     }
 
     public boolean estBorneAGauche() {
-        return null != debut;
+        return debut.borne();
     }
 
-    public BigDecimal getDebut() {
-        return debut;
+    public Optional<BigDecimal> getDebut() {
+        return debut.valeur();
     }
 
     public boolean estBorneADroite() {
-        return null != fin;
+        return fin.borne();
     }
 
     public boolean isBorne() {
         return estBorneAGauche() && estBorneADroite();
     }
 
-    public BigDecimal getFin() {
-        return fin;
+    public Optional<BigDecimal> getFin() {
+        return fin.valeur();
     }
 
-    public BigDecimal longueur() {
-        if (!isBorne()) return null;
-        else return getFin().subtract(getDebut());
+
+    public Optional<BigDecimal> longueur() {
+        return longueurAvant(fin);
     }
 
-    private BigDecimal translate(BigDecimal coordonnee, BigDecimal rapport, TypeArrondi typeArrondi) {
+    public Optional<BigDecimal> longueurAvant(DecimalEtendu dec) {
+        if (dec.compareTo(debut) <= 0) return Optional.of(BigDecimal.ZERO);
+        return fin.min(dec).valeur().flatMap(f -> debut.valeur().map(f::subtract));
+    }
+
+    private DecimalEtendu translate(DecimalEtendu coordonnee, BigDecimal rapport, TypeArrondi typeArrondi) {
         assert null != coordonnee;
-        return typeArrondi.arrondirMontant(coordonnee.multiply(rapport));
+        assert 0 != BigDecimal.ZERO.compareTo(rapport);
+        return coordonnee.mutiply(DecimalEtendu.de(rapport)).map(de -> de.arrondir(typeArrondi)).orElseThrow();
     }
 
     public Intervalle homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
-        Cons cons = new Cons();
-        cons = (!estBorneAGauche()) ?  cons.deMoinsInfini() : cons.de(translate(debut,rapport,typeArrondi));
-        cons = (!estBorneADroite()) ? cons.aPlusInfini() : cons.a(translate(fin,rapport,typeArrondi));
-        return cons.intervalle();
+        assert 0 != BigDecimal.ZERO.compareTo(rapport);
+        return new Cons()
+                .de(translate(debut,rapport,typeArrondi))
+                .a(translate(fin,rapport,typeArrondi))
+                .intervalle();
+    }
+
+    private boolean plusGrandQueBorneInferieure(DecimalEtendu val) {
+        int compareBorneInferieure = val.compareTo(this.debut);
+        return debutInclus ? compareBorneInferieure >= 0 : compareBorneInferieure > 0;
+    }
+
+    private boolean plusPetitQueBorneSuperieure(DecimalEtendu val) {
+        int compareBorneSuperieure = val.compareTo(this.fin);
+        return finInclus ? compareBorneSuperieure <= 0 : compareBorneSuperieure < 0;
     }
 
     public boolean encadre(BigDecimal x) {
         if (null == x) return false;
-        boolean plusGrandQueBorneInferieure = true;
-        if (null != this.debut) {
-            int compareBorneInferieure = x.compareTo(this.debut);
-            plusGrandQueBorneInferieure = debutInclus ? compareBorneInferieure >= 0 : compareBorneInferieure > 0;
-        }
-        if (plusGrandQueBorneInferieure) {
-            if (null == this.fin) return true;
-            int compareBorneSuperieure = x.compareTo(this.fin);
-            return finInclus ? compareBorneSuperieure <= 0 : compareBorneSuperieure < 0;
-        } else {
-            return false;
-        }
+        DecimalEtendu val = DecimalEtendu.de(x);
+        return plusGrandQueBorneInferieure(val) && plusPetitQueBorneSuperieure(val);
     }
 
     public boolean adjacent(Intervalle inter) {
-        if (null == this.fin) {
-            if (null == this.debut) return false;
-            return 0 == this.debut.compareTo(inter.getFin());
-        }
-        if (null == this.debut) {
-            return 0 == this.getFin().compareTo(inter.getDebut());
-        }
-        return (null != inter.getDebut() && 0 == this.getFin().compareTo(inter.getDebut()))
-                || (null != inter.getFin() && 0 == this.debut.compareTo(inter.getFin()));
+        if (this.equals(TOUT)) return false;
+        return 0 == fin.compareTo(inter.debut)
+                ||  0 == debut.compareTo(inter.fin);
     }
 
     public boolean valeursInferieuresA(BigDecimal x) {
         assert null != x;
-        return estBorneADroite() && getFin().compareTo(x) < 0;
+        return fin.compareTo(DecimalEtendu.de(x)) < 0;
     }
 
     public boolean valeursSuperieuresA(BigDecimal x) {
         assert null != x;
-        return estBorneAGauche() && getDebut().compareTo(x) > 0;
+        return debut.compareTo(DecimalEtendu.de(x)) > 0;
     }
 
     /**
@@ -125,7 +134,7 @@ public class Intervalle {
      */
     public Intervalle union(Intervalle inter) {
         Cons cons = new Cons();
-        if (null != getFin() && null != inter.getDebut() && 0 == this.getFin().compareTo(inter.getDebut())) {
+        if (fin.borne() && inter.debut.borne() && 0 == fin.compareTo(inter.debut)) {
             cons = cons.de(this.debut);
             if (this.debutInclus) {
                 cons =cons.inclus();
@@ -139,14 +148,14 @@ public class Intervalle {
                 cons = cons.exclus();
             }
             return cons.intervalle();
-        } else if (null != getDebut() && null != inter.getFin() && 0 == this.getDebut().compareTo(inter.getFin())) {
-            cons = cons.de(inter.getDebut());
+        } else if (debut.borne() && inter.fin.borne() && 0 == debut.compareTo(inter.fin)) {
+            cons = cons.de(inter.debut);
             if (inter.debutInclus) {
                 cons = cons.inclus();
             } else {
                 cons = cons.exclus();
             }
-            cons = cons.a(this.getFin());
+            cons = cons.a(fin);
             if (this.finInclus) {
                 cons = cons.inclus();
             } else {
@@ -199,15 +208,19 @@ public class Intervalle {
     }
 
     public static class Cons {
-        private BigDecimal debut;
-        private BigDecimal fin;
+        private DecimalEtendu debut;
+        private DecimalEtendu fin;
         private boolean finRenseigne = false;
         private boolean debutInclus = false;
         private boolean finInclus = true;
 
-        public Cons de(BigDecimal debut) {
+        Cons de(DecimalEtendu debut) {
             this.debut = debut;
             return this;
+        }
+
+        public Cons de(BigDecimal debut) {
+            return de(DecimalEtendu.de(debut));
         }
 
         public Cons de(String debut) {
@@ -219,13 +232,17 @@ public class Intervalle {
         }
 
         public Cons deMoinsInfini() {
-            return de((BigDecimal)null);
+            return de(INFINI_NEGATIF);
         }
 
-        public Cons a(BigDecimal fin) {
+        public Cons a(DecimalEtendu fin) {
             this.fin = fin;
             this.finRenseigne = true;
             return this;
+        }
+
+        public Cons a(BigDecimal fin) {
+            return a(DecimalEtendu.de(fin));
         }
 
         public Cons a(String fin) {
@@ -237,7 +254,7 @@ public class Intervalle {
         }
 
         public Cons aPlusInfini() {
-            return a((BigDecimal)null);
+            return a(INFINI_POSITIF);
         }
 
         public Cons inclus() {

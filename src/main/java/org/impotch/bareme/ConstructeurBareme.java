@@ -333,11 +333,7 @@ public class ConstructeurBareme {
     }
 
     private BigDecimal obtenirValeurFinTranche(TrancheBareme tranche) {
-        Intervalle inter = tranche.getIntervalle();
-        if (!inter.estBorneADroite()) {
-            return BigDecimal.ZERO;
-        }
-        return tranche.integre(inter.getFin());
+        return tranche.getIntervalle().getFin().map(tranche::integre).orElse(BigDecimal.ZERO);
     }
 
     protected void ajouterTranche(TrancheBareme tranche) {

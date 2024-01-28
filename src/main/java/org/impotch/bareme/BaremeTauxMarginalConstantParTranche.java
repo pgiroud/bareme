@@ -46,7 +46,7 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
         for (int i = 1; i < tranches.size(); i++) {
             TrancheBareme tranchePrecedente = tranches.get(i-1);
             TrancheBareme tranche = tranches.get(i);
-            tranches.set(i,tranche.setValeurOrdre0(calcul(tranchePrecedente.getIntervalle().getFin())));
+            tranches.set(i,tranche.setValeurOrdre0(calcul(tranchePrecedente.getIntervalle().getFin().get())));
         }
     }
 
@@ -72,14 +72,9 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
         List<TrancheBareme> tranches = getTranches();
         if (tranches.size() > 0) {
             TrancheBareme derniereTranche = tranches.get(tranches.size()-1);
-            if (!derniereTranche.getIntervalle().estBorneADroite()) {
-                return derniereTranche.getValeurs().getIncrement();
-            } else {
-                // Si la dernière tranche est bornée à droite
-                BigDecimal borne = derniereTranche.getIntervalle().getFin();
-                BigDecimal valeur = calcul(borne);
-                return valeur.divide(borne,10, RoundingMode.HALF_UP);
-            }
+            return derniereTranche.getIntervalle().getFin().map(borne ->
+                calcul(borne).divide(borne,10, RoundingMode.HALF_UP))
+                    .orElse(derniereTranche.getValeurs().getIncrement());
         }
         if (tranches.size() == 0) {
             throw new IllegalStateException("Impossible de définir le taux maximal, il n’y a pas de tranches !!  ");

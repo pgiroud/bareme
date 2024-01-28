@@ -18,6 +18,9 @@ package org.impotch.bareme;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntervalleTest {
@@ -71,5 +74,31 @@ public class IntervalleTest {
     }
 
 
+    @Test
+    public void longueurAvantAvecValeurAvantLIntervalle() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(20).a(40)
+                .intervalle();
+        Optional<BigDecimal> longueur = inter.longueurAvant(DecimalEtendu.de(BigDecimal.valueOf(10)));
+        assertThat(longueur).isEqualTo(Optional.of(BigDecimal.ZERO));
+    }
+
+    @Test
+    public void longueurAvantAvecValeurDansLIntervalle() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(20).a(40)
+                .intervalle();
+        Optional<BigDecimal> longueur = inter.longueurAvant(DecimalEtendu.de(BigDecimal.valueOf(35)));
+        assertThat(longueur).isEqualTo(Optional.of(BigDecimal.valueOf(15)));
+    }
+
+    @Test
+    public void longueurAvantAvecValeurApresLIntervalle() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(20).a(40)
+                .intervalle();
+        Optional<BigDecimal> longueur = inter.longueurAvant(DecimalEtendu.de(BigDecimal.valueOf(120)));
+        assertThat(longueur).isEqualTo(Optional.of(BigDecimal.valueOf(20)));
+    }
 
 }
