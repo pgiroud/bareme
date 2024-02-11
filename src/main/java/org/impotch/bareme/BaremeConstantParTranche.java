@@ -16,8 +16,6 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.impotch.util.TypeArrondi;

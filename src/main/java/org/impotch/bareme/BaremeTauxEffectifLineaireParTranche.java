@@ -18,7 +18,6 @@ package org.impotch.bareme;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.math.BigDecimal.ZERO;
 
 public class BaremeTauxEffectifLineaireParTranche extends BaremeTauxEffectifParTranche {
 

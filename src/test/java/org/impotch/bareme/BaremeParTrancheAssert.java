@@ -17,7 +17,6 @@ package org.impotch.bareme;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.AbstractBigDecimalAssert;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.impotch.util.BigDecimalUtil;
 

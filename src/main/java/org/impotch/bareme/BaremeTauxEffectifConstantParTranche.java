@@ -16,13 +16,8 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.impotch.util.BigDecimalUtil;
-import org.impotch.util.HashCodeBuilder;
-import org.impotch.util.TypeArrondi;
 
 /**
  * Barème à taux effectif défini par tranche et dont le taux est constant sur chacune des tranches.

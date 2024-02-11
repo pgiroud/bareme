@@ -23,13 +23,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.impotch.util.BigDecimalUtil.parse;
+
 public class ConstructeurBareme {
 
     private final TypeBareme type;
 
     private ModeCalcul mode = ModeCalcul.CONSTANT;
 
-    protected List<TrancheBareme> tranches = new ArrayList();
+    protected List<TrancheBareme> tranches = new ArrayList<>();
 
     private TypeArrondi typeArrondiSurChaqueTranche = TypeArrondi.CENTIEME_LE_PLUS_PROCHE;
     private TypeArrondi typeArrondiGlobal = TypeArrondi.CENTIEME_LE_PLUS_PROCHE;
@@ -189,7 +191,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme taux(String taux) {
-        this.taux = BigDecimalUtil.parseTaux(taux);
+        this.taux = parse(taux);
         if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
             BigDecimal valeurEnDebutDeTranche = this.valeur;
             // TODO PGI recalculer la valeur en fin d'intervalle
@@ -217,7 +219,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme uniqueTranche(String taux) {
-        return uniqueTranche(BigDecimalUtil.parseTaux(taux));
+        return uniqueTranche(parse(taux));
     }
 
     public ConstructeurBareme uniqueTranche(int valeur) {
@@ -236,7 +238,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme premiereTranche(int jusqua, String taux) {
-        return premiereTranche(BigDecimal.valueOf(jusqua), BigDecimalUtil.parseTaux(taux));
+        return premiereTranche(BigDecimal.valueOf(jusqua), parse(taux));
     }
 
     public ConstructeurBareme premiereTranche(int jusqua, int valeur) {
@@ -250,7 +252,7 @@ public class ConstructeurBareme {
 
 
     public final ConstructeurBareme tranche(int de, int a, String taux, String tauxEnPlusPar100Francs) {
-        return this.tranche(BigDecimal.valueOf(de), BigDecimal.valueOf(a), BigDecimalUtil.parseTaux(taux), BigDecimalUtil.parseTaux(tauxEnPlusPar100Francs).movePointLeft(2));
+        return this.tranche(BigDecimal.valueOf(de), BigDecimal.valueOf(a), parse(taux), parse(tauxEnPlusPar100Francs).movePointLeft(2));
     }
 
 
@@ -270,7 +272,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme tranche(int de, int a, String taux) {
-        return this.tranche(de, a, BigDecimalUtil.parseTaux(taux));
+        return this.tranche(de, a, parse(taux));
     }
 
     public ConstructeurBareme tranche(int de, int a, int valeur) {
@@ -304,7 +306,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme derniereTranche(int depuis, String taux) {
-        return derniereTranche(BigDecimal.valueOf(depuis), BigDecimalUtil.parseTaux(taux));
+        return derniereTranche(BigDecimal.valueOf(depuis), parse(taux));
     }
 
     protected void completerBareme(BaremeParTranche bareme) {

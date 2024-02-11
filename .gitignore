@@ -11,3 +11,7 @@ target/
 *.iml
 *.ipr
 *.iws
+
+# VSCode avec metals
+.metals/
+.vscode/

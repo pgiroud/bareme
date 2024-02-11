@@ -17,6 +17,7 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -82,7 +83,7 @@ public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
         BigDecimal deltaImpotTranche = borneSup.getOrdonnee().subtract(borneInf.getOrdonnee());
         BigDecimal deltaAssietteTranche = borneSup.getAbscisse().subtract(borneInf.getAbscisse());
         BigDecimal deltaAssiette = assiette.subtract(borneInf.getAbscisse());
-        BigDecimal deltaImpot = deltaImpotTranche.multiply(deltaAssiette).divide(deltaAssietteTranche, 3, BigDecimal.ROUND_HALF_UP);
+        BigDecimal deltaImpot = deltaImpotTranche.multiply(deltaAssiette).divide(deltaAssietteTranche, 3, RoundingMode.HALF_UP);
         return getTypeArrondi().arrondirMontant(borneInf.getOrdonnee().add(deltaImpot));
     }
 

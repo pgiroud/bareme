@@ -37,7 +37,7 @@ public abstract class BaremeParTranche implements Bareme {
     /****************** Attributs *********************/
     /**************************************************/
 
-    private List<TrancheBareme> tranches = new ArrayList();
+    private List<TrancheBareme> tranches = new ArrayList<>();
     private TypeArrondi typeArrondiSurEntrant = TypeArrondi.UNITE_INF;
 
     private TypeArrondi typeArrondiSurChaqueTranche;
