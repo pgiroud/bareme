@@ -16,6 +16,7 @@
 package org.impotch.bareme;
 
 
+import org.impotch.util.TypeArrondi;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -99,6 +100,61 @@ public class IntervalleTest {
                 .intervalle();
         Optional<BigDecimal> longueur = inter.longueurAvant(DecimalEtendu.de(BigDecimal.valueOf(120)));
         assertThat(longueur).isEqualTo(Optional.of(BigDecimal.valueOf(20)));
+    }
+
+    @Test
+    public void homothetie_centree_origine_ouvert_ouvert() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(-1).exclus().a(1).exclus()
+                .intervalle();
+        Intervalle resultatAttendu = new Intervalle.Cons()
+                .de(-2).exclus().a(2).exclus()
+                .intervalle();
+        assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
+    }
+
+    @Test
+    public void homothetie_a_droite_ouvert_ouvert() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(1).exclus().a(2).exclus()
+                .intervalle();
+        Intervalle resultatAttendu = new Intervalle.Cons()
+                .de(2).exclus().a(4).exclus()
+                .intervalle();
+        assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
+    }
+
+    @Test
+    public void homothetie_a_droite_ouvert_ferme() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(1).exclus().a(2)
+                .intervalle();
+        Intervalle resultatAttendu = new Intervalle.Cons()
+                .de(2).exclus().a(4)
+                .intervalle();
+        assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
+    }
+
+    @Test
+    public void homothetie_a_droite_ferme_ouvert() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(1).a(2).exclus()
+                .intervalle();
+        Intervalle resultatAttendu = new Intervalle.Cons()
+                .de(2).a(4).exclus()
+                .intervalle();
+        assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
+    }
+
+    @Test
+    public void homothetie_a_droite_ferme_ferme() {
+        Intervalle inter = new Intervalle.Cons()
+                .de(1).a(2)
+                .intervalle();
+        Intervalle resultatAttendu = new Intervalle.Cons()
+                .de(2).a(4)
+                .intervalle();
+        assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
     }
 
 }

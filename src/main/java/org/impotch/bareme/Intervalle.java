@@ -89,10 +89,13 @@ public class Intervalle {
 
     public Intervalle homothetie(BigDecimal rapport, TypeArrondi typeArrondi) {
         assert 0 != BigDecimal.ZERO.compareTo(rapport);
-        return new Cons()
+        Cons cons = new Cons()
                 .de(translate(debut,rapport,typeArrondi))
                 .a(translate(fin,rapport,typeArrondi))
-                .intervalle();
+                ;
+        cons.debutInclus = this.debutInclus;
+        cons.finInclus = this.finInclus;
+        return cons.intervalle();
     }
 
     private boolean plusGrandQueBorneInferieure(DecimalEtendu val) {
