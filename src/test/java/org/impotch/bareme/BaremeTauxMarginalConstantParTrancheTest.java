@@ -109,14 +109,14 @@ public class BaremeTauxMarginalConstantParTrancheTest {
 
     @Test
     public void tauxMaximalAvecUneTranche() {
-        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+        BaremeTauxMaximal bareme =  (BaremeTauxMaximal)unBaremeATauxMarginal()
                 .plusDe(0).taux("10 %").construire();
         assertThat(bareme.getTauxMaximum()).isEqualByComparingTo("0.10");
     }
 
     @Test
     public void tauxMaximalAvecQuatreTranches() {
-        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+        BaremeTauxMaximal bareme =  (BaremeTauxMaximal)unBaremeATauxMarginal()
                 .jusqua(200).taux("0 %")
                 .puisJusqua(1000).taux("5 %")
                 .puisJusqua(2000).taux("10 %")
@@ -126,7 +126,7 @@ public class BaremeTauxMarginalConstantParTrancheTest {
 
     @Test
     public void tauxMaximalAvecDerniereTrancheBorneeADroite() {
-        BaremeTauxMarginal bareme =  (BaremeTauxMarginal)unBaremeATauxMarginal()
+        BaremeTauxMaximal bareme =  (BaremeTauxMaximal)unBaremeATauxMarginal()
                 .de(0).a(1000).taux("5 %")
                 .de(1000).a(2000).taux("10 %")
                 .construire();

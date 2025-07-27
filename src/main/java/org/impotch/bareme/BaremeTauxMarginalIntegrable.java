@@ -29,11 +29,11 @@ import org.impotch.util.math.integration.Primitivable;
  * @author Patrick Giroud
  *
  */
-public class BaremeTauxMarginalIntegrable implements Bareme {
+public abstract class BaremeTauxMarginalIntegrable implements BaremeTauxMaximal {
 
     private Primitivable tauxMarginal;
     private final MethodeIntegration methode = new IntegrationExacte();
-    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
+    private TypeArrondi typeArrondi = TypeArrondi.VINGTIEME_LE_PLUS_PROCHE;
 
     /**
      * On précise ici une fonction "taux marginal" qui est intégrable c.-à-d. dont on connaît une primitive.
@@ -61,7 +61,7 @@ public class BaremeTauxMarginalIntegrable implements Bareme {
     public BigDecimal calcul(BigDecimal pAssiette) {
         double resultatFlottant = methode.integre(tauxMarginal, 0.0, pAssiette.doubleValue());
         BigDecimal resultat = BigDecimal.valueOf(resultatFlottant);
-        return typeArrondi.arrondirMontant(resultat);
+        return typeArrondi.arrondir(resultat);
     }
 
 }

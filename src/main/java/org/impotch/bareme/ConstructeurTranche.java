@@ -22,6 +22,8 @@ class ConstructeurTranche {
     private final ConstructeurIntervalle consInter = new ConstructeurIntervalle();
     private final ConstructeurValeursAuPremierOrdre consValeurs = new ConstructeurValeursAuPremierOrdre();
 
+    private Intervalle intervalleCourant;
+
     public static ConstructeurTranche uneTranche() { return new ConstructeurTranche(); }
 
     // ******************* Construction des intervalles *************************
@@ -86,6 +88,10 @@ class ConstructeurTranche {
         return this;
     }
 
+    public ConstructeurTranche intervalle(Intervalle inter) {
+        intervalleCourant = inter;
+        return this;
+    }
 
     public ConstructeurTranche valeur(BigDecimal montantOuTaux) {
         consValeurs.valeur(montantOuTaux);
@@ -104,9 +110,11 @@ class ConstructeurTranche {
 
     public TrancheBareme construire() {
         // TODO PGI retourner Option
-        Intervalle inter = consInter.construire();
+        Intervalle inter = (null != intervalleCourant) ?  intervalleCourant : consInter.construire();
         if (null == inter) return null;
-        return new TrancheBareme(inter, consValeurs.construire());
+        TrancheBareme tranche = new TrancheBareme(inter, consValeurs.construire());
+        intervalleCourant = null;
+        return tranche;
     }
 
 //    protected TrancheBareme construireTranche(BigDecimal de, BigDecimal a, BigDecimal montantOuTaux) {

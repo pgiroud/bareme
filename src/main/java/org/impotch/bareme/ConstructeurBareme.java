@@ -27,7 +27,59 @@ import static org.impotch.util.BigDecimalUtil.parse;
 
 public class ConstructeurBareme {
 
+    public static ConstructeurBareme unBareme() {
+        return new ConstructeurBareme(TypeBareme.BAREME);
+    }
+
+    public static ConstructeurBareme unBaremeATauxEffectif() {
+        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_EFFECTIF);
+    }
+
+    public static ConstructeurBareme unBaremeATauxEffectifSansOptimisationDesQueNonNul() {
+        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_EFFECTIF,TypeOptimisation.SANS_OPTIMISATION_DES_QUE_NON_NUL);
+    }
+
+    public static ConstructeurBareme unBaremeATauxEffectifSansOptimisation() {
+        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_EFFECTIF,TypeOptimisation.SANS);
+    }
+
+    public static ConstructeurBareme unBaremeATauxMarginal(BigDecimal demarrage) {
+        ConstructeurBareme cons = new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_MARGINAL);
+        cons.jusqua(demarrage).valeur(0).taux("0");
+        return cons;
+    }
+
+    public static ConstructeurBareme unBaremeATauxMarginal() {
+        return unBaremeATauxMarginal(BigDecimal.ZERO);
+    }
+
+
+    public static ConstructeurBareme unBaremeATauxMarginal(BaremeParTranche bareme) {
+        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_MARGINAL)
+                .setTranches(bareme.getTranches())
+                .typeArrondiGlobal(bareme.getTypeArrondiGlobal())
+                .typeArrondiSurChaqueTranche(bareme.getTypeArrondiSurChaqueTranche())
+                .seuil(bareme.getSeuil());
+    }
+
+    private static enum TypeOptimisation {
+
+        SANS,
+        SANS_OPTIMISATION_DES_QUE_NON_NUL,
+        AVEC;
+
+        public boolean systematique() {
+            return AVEC.equals(this);
+        }
+
+        public boolean sansOptimisationdesQueNonNul() {
+            return SANS_OPTIMISATION_DES_QUE_NON_NUL.equals(this);
+        }
+
+    }
+
     private final TypeBareme type;
+    private final TypeOptimisation optimisation;
 
     private ModeCalcul mode = ModeCalcul.CONSTANT;
 
@@ -54,37 +106,24 @@ public class ConstructeurBareme {
      * que l'intervalle dont le début est 3 et la fin est 4 ne comprend pas 3 mais comprend 4.
      */
     private ConstructeurBareme(TypeBareme type) {
+        this(type, TypeOptimisation.AVEC);
+    }
+
+
+    /**
+     * Permet la construction des barèmes constants par tranche que
+     * ce soit la valeur ou le taux qui est constant.
+     * Un barème par tranche est une suite d'intervalle qui ne s'intersectent pas.
+     * Par défaut, les intervalles sont ouverts à gauche et fermés à droite c.-à-d.
+     * que l'intervalle dont le début est 3 et la fin est 4 ne comprend pas 3 mais comprend 4.
+     */
+    private ConstructeurBareme(TypeBareme type, TypeOptimisation optimisation) {
         super();
         this.type = type;
+        this.optimisation = optimisation;
     }
 
 
-    public static ConstructeurBareme unBareme() {
-        return new ConstructeurBareme(TypeBareme.BAREME);
-    }
-
-    public static ConstructeurBareme unBaremeATauxEffectif() {
-        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_EFFECTIF);
-    }
-
-    public static ConstructeurBareme unBaremeATauxMarginal(BigDecimal demarrage) {
-        ConstructeurBareme cons = new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_MARGINAL);
-        cons.jusqua(demarrage).valeur(0).taux("0");
-        return cons;
-    }
-
-    public static ConstructeurBareme unBaremeATauxMarginal() {
-        return unBaremeATauxMarginal(BigDecimal.ZERO);
-    }
-
-
-    public static ConstructeurBareme unBaremeATauxMarginal(BaremeParTranche bareme) {
-        return new ConstructeurBareme(TypeBareme.BAREME_A_TAUX_MARGINAL)
-                .setTranches(bareme.getTranches())
-                .typeArrondiGlobal(bareme.getTypeArrondiGlobal())
-                .typeArrondiSurChaqueTranche(bareme.getTypeArrondiSurChaqueTranche())
-                .seuil(bareme.getSeuil());
-    }
 
 
     public BaremeParTranche construire() {
@@ -255,6 +294,16 @@ public class ConstructeurBareme {
         return this.tranche(BigDecimal.valueOf(de), BigDecimal.valueOf(a), parse(taux), parse(tauxEnPlusPar100Francs).movePointLeft(2));
     }
 
+    public ConstructeurBareme tranche(Intervalle inter, BigDecimal taux) {
+        consTranche.intervalle(inter);
+        if (TypeBareme.BAREME_A_TAUX_MARGINAL == type) {
+            increment(taux);
+        } else {
+            valeur(taux);
+        }
+        ajouterTranche(consTranche.construire());
+        return this;
+    }
 
     public ConstructeurBareme tranche(BigDecimal de, BigDecimal a, BigDecimal taux) {
         de(de).a(a);
@@ -338,6 +387,15 @@ public class ConstructeurBareme {
         return tranche.getIntervalle().getFin().map(tranche::integre).orElse(BigDecimal.ZERO);
     }
 
+
+    private boolean avecOptimisationSystematique() {
+        return this.optimisation.systematique();
+    }
+
+    private boolean sansOptimisationDesQueNonNul() {
+        return this.optimisation.sansOptimisationdesQueNonNul();
+    }
+
     protected void ajouterTranche(TrancheBareme tranche) {
         // TODO vérifier le non recouvrement des tranches
         // Attention aux performances sur les barèmes avec beaucoup de tranches
@@ -347,9 +405,11 @@ public class ConstructeurBareme {
         // faire l'hypothèse que les tranches sont ordonnées.
 
         this.valeur = obtenirValeurFinTranche(tranche);
-        if(trancheCompactable(derniereTranche(),tranche)) {
-            TrancheBareme trancheCompacte = derniereTranche().compacte(tranche);
-            tranches.set(tranches.size()-1,trancheCompacte);
+        if ((avecOptimisationSystematique()
+            || (sansOptimisationDesQueNonNul() && tranche.getValeurs().estEgaleAZero()))
+                && trancheCompactable(derniereTranche(),tranche)) {
+                TrancheBareme trancheCompacte = derniereTranche().compacte(tranche);
+                tranches.set(tranches.size() - 1, trancheCompacte);
         } else {
             tranches.add(tranche);
         }

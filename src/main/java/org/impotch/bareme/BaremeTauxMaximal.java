@@ -17,6 +17,6 @@ package org.impotch.bareme;
 
 import java.math.BigDecimal;
 
-public interface BaremeTauxMarginal extends Bareme {
+public interface BaremeTauxMaximal extends Bareme {
     BigDecimal getTauxMaximum();
 }

@@ -157,4 +157,160 @@ public class IntervalleTest {
         assertThat(inter.homothetie(BigDecimal.TWO, TypeArrondi.UNITE_LA_PLUS_PROCHE)).isEqualTo(resultatAttendu);
     }
 
+
+    @Test
+    public void inclusDansAvecBornesInferieuresEgalesEtComprises() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(1).inclus().a(3).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void nonInclusDansAvecBornesInferieuresEgalesEtUneCompriseMaisPasLAutre() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(1).exclus().a(3).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isFalse();
+    }
+
+    @Test
+    public void moinsInfiniDeuxBorneExclueNonInclusDansMoinsInfiniUnBorneExclue() {
+        Intervalle inclus = new Intervalle.Cons()
+                .deMoinsInfini().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .deMoinsInfini().a(1).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isFalse();
+    }
+
+    @Test
+    public void moinsInfiniDeuxBorneIncluseNonInclusDansMoinsInfiniUnBorneExclue() {
+        Intervalle inclus = new Intervalle.Cons()
+                .deMoinsInfini().a(2).inclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .deMoinsInfini().a(1).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isFalse();
+    }
+
+
+    @Test
+    public void moinsInfiniUnBorneExclueInclusDansMoinsInfiniDeuxBorneExclue() {
+        Intervalle inclus = new Intervalle.Cons()
+                .deMoinsInfini().a(1).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .deMoinsInfini().a(2).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void moinsInfiniUnBorneExclueInclusDansMoinsInfiniDeuxBorneIncluse() {
+        Intervalle inclus = new Intervalle.Cons()
+                .deMoinsInfini().a(1).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .deMoinsInfini().a(2).inclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void memeIntervalleMoinsInfiniDeuxBorneExclue() {
+        Intervalle inclus = new Intervalle.Cons()
+                .deMoinsInfini().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .deMoinsInfini().a(2).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void inclusDansAvecBornesSuperieuresEgalesEtNonComprises() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(2).inclus().a(3).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(1).inclus().a(3).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void unInclusDeuxExclusDansZeroInclusDeuxExclus() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(0).inclus().a(2).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void unInclusDeuxExclusPasInclusDansUnExclusDeuxExclus() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().a(2).exclus()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(1).exclus().a(2).exclus()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isFalse();
+    }
+
+    @Test
+    public void zeroInclusPlusInfiniPasInclusDansZeroExclusPlusInfini() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(0).inclus().aPlusInfini()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(0).exclus().aPlusInfini()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isFalse();
+    }
+
+    @Test
+    public void zeroInclusPlusInfiniInclusDansZeroInclusPlusInfini() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(0).inclus().aPlusInfini()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(0).inclus().aPlusInfini()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+
+    @Test
+    public void unInclusPlusInfiniInclusDansZeroInclusPlusInfini() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().aPlusInfini()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(0).inclus().aPlusInfini()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
+
+    @Test
+    public void unInclusPlusInfiniInclusDansZeroExclusPlusInfini() {
+        Intervalle inclus = new Intervalle.Cons()
+                .de(1).inclus().aPlusInfini()
+                .intervalle();
+        Intervalle englobant = new Intervalle.Cons()
+                .de(0).exclus().aPlusInfini()
+                .intervalle();
+        assertThat(inclus.estInclusDans(englobant)).isTrue();
+    }
 }

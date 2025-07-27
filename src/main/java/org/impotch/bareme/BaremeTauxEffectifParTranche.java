@@ -16,6 +16,7 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Barème défini par tranche et dont le taux est fourni dans une tranche.
@@ -39,7 +40,18 @@ public abstract class BaremeTauxEffectifParTranche extends BaremeParTranche impl
     public BigDecimal calculSansSeuil(BigDecimal assiette) {
         BigDecimal taux = getTaux(assiette);
         BigDecimal montantAvantArrondi = assiette.multiply(taux);
-        return this.getTypeArrondiSurChaqueTranche().arrondirMontant(montantAvantArrondi);
+        return this.getTypeArrondiSurChaqueTranche().arrondir(montantAvantArrondi);
     }
 
+
+    private TrancheBareme derniereTranche() {
+        List<TrancheBareme> tranches = this.getTranches();
+        return tranches.getLast();
+    }
+
+    @Override
+    public BigDecimal getTauxMaximum() {
+        TrancheBareme der = derniereTranche();
+        return der.getValeurs().getValeur();
+    }
 }

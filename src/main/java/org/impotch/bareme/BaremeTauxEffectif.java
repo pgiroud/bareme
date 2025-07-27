@@ -23,7 +23,7 @@ import java.math.BigDecimal;
  *
  * @author Patrick Giroud
  */
-public interface BaremeTauxEffectif extends Bareme {
+public interface BaremeTauxEffectif extends Bareme, BaremeTauxMaximal {
 
     default BigDecimal getTaux(long assiette) {
         return getTaux(BigDecimal.valueOf(assiette));

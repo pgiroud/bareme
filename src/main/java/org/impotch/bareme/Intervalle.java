@@ -51,6 +51,39 @@ public class Intervalle {
                 f -> debut.valeur().map(d -> f.add(d).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP)));
     }
 
+    public boolean ouvertAGauche() {
+        return INFINI_NEGATIF.equals(debut) || !debutInclus;
+    }
+
+    public boolean fermeAGauche() {
+        return INFINI_NEGATIF.equals(debut) || debutInclus;
+    }
+
+    public boolean ouvertADroite() {
+        return INFINI_POSITIF.equals(fin) || !finInclus;
+    }
+
+    public boolean fermeADroite() {
+        return INFINI_POSITIF.equals(fin) || finInclus;
+    }
+
+
+    public boolean estOuvertOuvert() {
+        return ouvertAGauche() && ouvertADroite();
+    }
+
+    public boolean estFermeFerme() {
+        return fermeAGauche() && fermeADroite();
+    }
+
+    public boolean estOuvertFerme() {
+        return ouvertAGauche() && fermeADroite();
+    }
+
+    public boolean estFermeOuvert() {
+        return fermeAGauche() && ouvertADroite();
+    }
+
     public boolean estBorneAGauche() {
         return debut.borne();
     }
@@ -118,6 +151,25 @@ public class Intervalle {
         if (this.equals(TOUT)) return false;
         return 0 == fin.compareTo(inter.debut)
                 ||  0 == debut.compareTo(inter.fin);
+    }
+
+    public boolean estInclusDans(Intervalle englobant) {
+        if (this.equals(englobant)) return true;
+
+        boolean debutMoinsInfiniDansEnglobant = !debut.borne() && !englobant.debut.borne();
+        boolean debutBorneIncluseDansEnglobant = debut.valeur().isPresent() && debutInclus && englobant.encadre(debut.valeur().get());
+        boolean debutBorneExcluseDansEnglobant = debut.valeur().isPresent() && !debutInclus && (englobant.encadre(debut.valeur().get()) || (!englobant.debutInclus && englobant.debut.equals(debut)));
+        boolean debutBorneDansEnglobant = debutBorneIncluseDansEnglobant || debutBorneExcluseDansEnglobant;
+        boolean debutDansEnglobant = debutMoinsInfiniDansEnglobant || debutBorneDansEnglobant;
+
+        boolean finPlusInifiniDansEnglobant = !fin.borne() && !englobant.fin.borne();
+        boolean finBorneIncluseDansEnglobant = fin.valeur().isPresent() && finInclus && englobant.encadre(fin.valeur().get());
+        boolean finBorneExcluseDansEnglobant = fin.valeur().isPresent() && !finInclus && (englobant.encadre(fin.valeur().get()) || (!englobant.finInclus && englobant.fin.equals(fin)));
+        boolean finBorneDansEnglobant = finBorneIncluseDansEnglobant || finBorneExcluseDansEnglobant;
+        boolean finDansEnglobant = finPlusInifiniDansEnglobant || finBorneDansEnglobant;
+
+        return debutDansEnglobant && finDansEnglobant;
+
     }
 
     public boolean valeursInferieuresA(BigDecimal x) {

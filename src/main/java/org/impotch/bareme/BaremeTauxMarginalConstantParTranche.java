@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.impotch.util.TypeArrondi;
 
-public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche implements BaremeTauxMarginal {
+public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche implements BaremeTauxMaximal {
 
     @Override
     public BigDecimal calculSansSeuil(BigDecimal assiette) {

@@ -31,6 +31,17 @@ class ValeursPremierOrdre {
         this.increment = increment;
     }
 
+    public boolean differentDeZero() {
+        return !estEgaleAZero();
+    }
+
+    public boolean estEgaleAZero() {
+        return 0 == BigDecimal.ZERO.compareTo(valeur)
+                && 0 == BigDecimal.ZERO.compareTo(increment);
+    }
+
+
+
     public BigDecimal getValeur() {
         return valeur;
     }
