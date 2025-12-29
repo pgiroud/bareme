@@ -16,8 +16,10 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 import org.impotch.util.BigDecimalUtil;
+import org.impotch.util.TypeArrondi;
 
 /**
  * Barème à taux effectif défini par tranche et dont le taux est constant sur chacune des tranches.
@@ -66,4 +68,11 @@ public final class BaremeTauxEffectifConstantParTranche extends
         return true;
     }
 
- }
+    @Override
+    public BaremeTauxEffectifConstantParTranche homothetieValeur(BigDecimal taux, TypeArrondi typeArrondi) {
+        BaremeTauxEffectifConstantParTranche bareme = new BaremeTauxEffectifConstantParTranche();
+        bareme.setTypeArrondiSurChaqueTranche(this.getTypeArrondiSurChaqueTranche());
+        bareme.setTranches(getTranches().stream().map(tranche -> tranche.homothetieValeur(taux, typeArrondi)).collect(Collectors.toList()));
+        return bareme;
+    }
+}

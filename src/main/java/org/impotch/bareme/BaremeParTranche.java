@@ -124,7 +124,7 @@ public abstract class BaremeParTranche implements Bareme {
      */
     @Override
     public BigDecimal calcul(BigDecimal assiette) {
-        BigDecimal entrantArrondi = typeArrondiSurEntrant.arrondirMontant(assiette);
+        BigDecimal entrantArrondi = typeArrondiSurEntrant.arrondir(assiette);
         BigDecimal resultat = calculSansSeuil(entrantArrondi);
         if (null != seuil && 0 < seuil.compareTo(resultat)) return BigDecimalUtil.ZERO_2_DECIMALES;
         return resultat;

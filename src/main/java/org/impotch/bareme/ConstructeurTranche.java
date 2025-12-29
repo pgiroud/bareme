@@ -117,48 +117,4 @@ class ConstructeurTranche {
         return tranche;
     }
 
-//    protected TrancheBareme construireTranche(BigDecimal de, BigDecimal a, BigDecimal montantOuTaux) {
-//        return de(de).a(a).valeur(montantOuTaux).construire();
-//    }
-
-//    /**
-//     * Cette méthode sera surchargée pour spécialiser les tranches de barèmes.
-//     * Par défaut, on utilise la tranche avec montant ou taux constant.
-//     * @param inter L'intervalle délimitant la tranche
-//     * @param montantOuTaux La valeur du barème pour tous les éléments appartenant à l'intervalle.
-//     * @return Une tranche de barème qui pourra être ajoutée à la liste des tranches du barèmes.
-//     */
-//    protected TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux) {
-//        return new TrancheBareme(inter, montantOuTaux);
-//    }
-
-//    TrancheBareme construireUniqueTranche(BigDecimal valeur) {
-//        return construireTranche(Intervalle.TOUT, valeur);
-//    }
-
-//    TrancheBareme construireTranche(BigDecimal de, BigDecimal a, BigDecimal montantOuTaux, BigDecimal incrementTaux) {
-//        return de(de).a(a).valeur(montantOuTaux).construire();
-//    }
-//
-//    TrancheBareme construireTranche(Intervalle inter, BigDecimal montantOuTaux, BigDecimal incrementTaux) {
-//        return new TrancheBareme(inter, montantOuTaux, incrementTaux);
-//    }
-//
-//
-//    TrancheBareme construirePremiereTranche(BigDecimal montantOuTaux) {
-//        Intervalle inter = consInter.construire();
-//        return construireTranche(inter, montantOuTaux);
-//    }
-//
-//    TrancheBareme construireTranche(BigDecimal montantOuTaux) {
-//        return valeur(montantOuTaux).construire();
-//    }
-//
-//
-//    TrancheBareme construireDerniereTranche(BigDecimal depuis, BigDecimal montantOuTaux) {
-//        return plusDe(depuis).valeur(montantOuTaux).construire();
-//    }
-
-
-
 }
