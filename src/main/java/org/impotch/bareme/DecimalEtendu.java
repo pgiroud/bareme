@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.impotch.bareme;
 
 import org.impotch.util.TypeArrondi;
@@ -26,9 +27,9 @@ public sealed interface DecimalEtendu extends Comparable<DecimalEtendu> permits 
         return new Borne(valeur);
     }
 
-    static DecimalEtendu INFINI_POSITIF = new Infini(true);
+    DecimalEtendu INFINI_POSITIF = new Infini(true);
 
-    static DecimalEtendu INFINI_NEGATIF = new Infini(false);
+    DecimalEtendu INFINI_NEGATIF = new Infini(false);
 
     boolean borne();
 
@@ -41,7 +42,7 @@ public sealed interface DecimalEtendu extends Comparable<DecimalEtendu> permits 
     DecimalEtendu min(DecimalEtendu de);
 }
 
-final record Borne(BigDecimal val) implements DecimalEtendu {
+record Borne(BigDecimal val) implements DecimalEtendu {
 
     @Override
     public boolean borne() {
@@ -97,7 +98,7 @@ final record Borne(BigDecimal val) implements DecimalEtendu {
     }
 }
 
-final record Infini(boolean positif) implements DecimalEtendu {
+record Infini(boolean positif) implements DecimalEtendu {
 
     @Override
     public boolean borne() {

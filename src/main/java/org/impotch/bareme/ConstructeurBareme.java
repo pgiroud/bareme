@@ -13,15 +13,15 @@
  * You should have received a copy of the GNU General Public License
  * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.impotch.bareme;
 
-import org.impotch.util.BigDecimalUtil;
-import org.impotch.util.TypeArrondi;
+package org.impotch.bareme;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.impotch.util.TypeArrondi;
 
 import static org.impotch.util.BigDecimalUtil.parse;
 
@@ -62,7 +62,7 @@ public class ConstructeurBareme {
                 .seuil(bareme.getSeuil());
     }
 
-    private static enum TypeOptimisation {
+    private enum TypeOptimisation {
 
         SANS,
         SANS_OPTIMISATION_DES_QUE_NON_NUL,
@@ -216,7 +216,7 @@ public class ConstructeurBareme {
     }
 
     public ConstructeurBareme valeur(String valeur) {
-        return valeur(BigDecimalUtil.parse(valeur));
+        return valeur(parse(valeur));
     }
 
     public ConstructeurBareme increment(BigDecimal increment) {
@@ -226,7 +226,7 @@ public class ConstructeurBareme {
 
 
     public ConstructeurBareme increment(String taux) {
-        return increment(BigDecimalUtil.parse(taux));
+        return increment(parse(taux));
     }
 
     public ConstructeurBareme taux(String taux) {

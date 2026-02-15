@@ -16,6 +16,7 @@
 package org.impotch.bareme;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.impotch.util.BigDecimalUtil;
@@ -60,12 +61,16 @@ public final class BaremeTauxEffectifConstantParTranche extends
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof BaremeTauxEffectifConstantParTranche)) return false;
-        BaremeTauxEffectifConstantParTranche bareme = (BaremeTauxEffectifConstantParTranche) obj;
+        if (!(obj instanceof BaremeTauxEffectifConstantParTranche bareme)) return false;
         if (!this.getTypeArrondiSurChaqueTranche().equals(bareme.getTypeArrondiSurChaqueTranche())) return false;
         if (0 != BigDecimalUtil.nullSafeCompare(this.getSeuil(), bareme.getSeuil())) return false;
         if (!this.getTranches().equals(bareme.getTranches())) return false;
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTypeArrondiSurChaqueTranche(),getSeuil(),getTranches());
     }
 
     @Override

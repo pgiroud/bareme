@@ -13,14 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with impotch/bareme.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.impotch.bareme;
-
-
-import org.impotch.util.TypeArrondi;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+
+import org.impotch.util.TypeArrondi;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
