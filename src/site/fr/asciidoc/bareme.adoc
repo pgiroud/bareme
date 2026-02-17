@@ -150,7 +150,7 @@ Soit
 50  + 100 + 300 = 450
 
 On constate que la borne supérieure d’un intervalle est toujours égale à la borne inférieur de l’intervalle suivant (il ne peut y avoir de trou contrairement à la façon dont sont décrits ces barèmes dans les lois).
-Une méthode plus simple est de construire le barème de la fçon suivante
+Une méthode plus simple est de construire le barème de la façon suivante
 
 [source,java]
 ----

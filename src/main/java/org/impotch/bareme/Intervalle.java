@@ -22,6 +22,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.impotch.util.BigDecimalUtil.trim;
 import static org.impotch.bareme.DecimalEtendu.INFINI_POSITIF;
 import static org.impotch.bareme.DecimalEtendu.INFINI_NEGATIF;
 
@@ -48,7 +49,7 @@ public class Intervalle {
 
     public Optional<BigDecimal> getMilieu() {
         return fin.valeur().flatMap(
-                f -> debut.valeur().map(d -> f.add(d).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP)));
+                f -> debut.valeur().map(d -> f.add(d).divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_UP).stripTrailingZeros()));
     }
 
     public boolean ouvertAGauche() {
@@ -56,7 +57,7 @@ public class Intervalle {
     }
 
     public boolean fermeAGauche() {
-        return INFINI_NEGATIF.equals(debut) || debutInclus;
+        return debutInclus;
     }
 
     public boolean ouvertADroite() {
@@ -64,7 +65,7 @@ public class Intervalle {
     }
 
     public boolean fermeADroite() {
-        return INFINI_POSITIF.equals(fin) || finInclus;
+        return finInclus;
     }
 
 
@@ -309,7 +310,7 @@ public class Intervalle {
         }
 
         public Cons aPlusInfini() {
-            return a(INFINI_POSITIF);
+            return a(INFINI_POSITIF).exclus();
         }
 
         public Cons inclus() {
