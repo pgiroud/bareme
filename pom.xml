@@ -5,14 +5,14 @@
     <!-- The Basics -->
     <groupId>org.impotch</groupId>
     <artifactId>bareme</artifactId>
-    <version>3.1.6-snapshot</version>
+    <version>3.1.6</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.impotch</groupId>
             <artifactId>util</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.8</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -129,10 +129,6 @@
                         <requires>
                             <require>asciidoctor-diagram</require>
                         </requires>
-                        <attributes>
-                            <source-highlighter>coderay</source-highlighter>
-                            <coderay-css>style</coderay-css>
-                        </attributes>
                     </asciidoc>
                 </configuration>
                 <dependencies>
@@ -191,8 +187,8 @@
                             <graphvizdot>C:\Program Files (x86)\Graphviz2.38\bin\dot.exe</graphvizdot>
                         -->
                         <!-- *nix :
-                            <graphvizdot>/usr/local/bin/dot</graphvizdot>
                         -->
+                            <graphvizdot>/usr/bin/dot</graphvizdot>
                     </attributes>
                 </configuration>
                 <executions>

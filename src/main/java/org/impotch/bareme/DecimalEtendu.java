@@ -86,7 +86,7 @@ record Borne(BigDecimal val) implements DecimalEtendu {
 
     @Override
     public DecimalEtendu arrondir(TypeArrondi arrondi) {
-        return DecimalEtendu.de(arrondi.arrondirMontant(this.val));
+        return DecimalEtendu.de(arrondi.arrondir(this.val));
     }
 
     @Override

@@ -30,8 +30,8 @@ public class BaremeTauxMarginalConstantParTranche extends BaremeParTranche imple
                 .filter(t -> t.getIntervalle().encadre(assiette))
                 .findFirst().orElseThrow().integre(assiette);
 
-        resultat = getTypeArrondiSurChaqueTranche().arrondirMontant(resultat);
-        return getTypeArrondiGlobal().arrondirMontant(resultat);
+        resultat = getTypeArrondiSurChaqueTranche().arrondir(resultat);
+        return getTypeArrondiGlobal().arrondir(resultat);
     }
 
     private void resetValeurs() {

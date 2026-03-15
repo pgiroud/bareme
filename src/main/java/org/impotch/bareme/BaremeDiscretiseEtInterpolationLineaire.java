@@ -37,7 +37,7 @@ public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
 
     private LinkedList<Point> montants = new LinkedList<Point>();
     private boolean listeTriee = true;
-    private TypeArrondi typeArrondi = TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
+    private TypeArrondi typeArrondi = TypeArrondi.VINGTIEME_LE_PLUS_PROCHE;
     private boolean definiAvantBorneInf;
     private boolean definiApresBorneSup;
 
@@ -84,7 +84,7 @@ public final class BaremeDiscretiseEtInterpolationLineaire implements Bareme {
         BigDecimal deltaAssietteTranche = borneSup.getAbscisse().subtract(borneInf.getAbscisse());
         BigDecimal deltaAssiette = assiette.subtract(borneInf.getAbscisse());
         BigDecimal deltaImpot = deltaImpotTranche.multiply(deltaAssiette).divide(deltaAssietteTranche, 3, RoundingMode.HALF_UP);
-        return getTypeArrondi().arrondirMontant(borneInf.getOrdonnee().add(deltaImpot));
+        return getTypeArrondi().arrondir(borneInf.getOrdonnee().add(deltaImpot));
     }
 
 

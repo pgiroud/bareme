@@ -39,7 +39,7 @@ Ceux-ci étaient définis par des formules mathématiques très compliquées à 
 Dans cette librairie, nous avons définis les barèmes ci-dessous.
 
 [plantuml, hierarchieBareme, png]
-----
+....
 interface Bareme {
 decimal calcul(decimal valeur)
 }
@@ -62,7 +62,7 @@ BaremeParTranche <|-- BaremeTauxEffectifParTranche
 BaremeTauxEffectifParTranche <|-- BaremeTauxEffectifConstantParTranche
 BaremeTauxEffectifParTranche <|-- BaremeTauxEffectifLineaireParTranche
 BaremeParTranche <|-- BaremeTauxMarginalConstantParTranche
-----
+....
 
 On peut constater des spécialisations de la notion de barème par tranche. Ces spécialisations permettent de préciser
 la façon dont se fait le calcul.

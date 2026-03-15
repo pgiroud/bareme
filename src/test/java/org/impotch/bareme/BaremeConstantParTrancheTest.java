@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import static java.math.BigDecimal.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.impotch.util.BigDecimalUtil.parse;
-import static org.impotch.util.TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
+import static org.impotch.util.TypeArrondi.VINGTIEME_LE_PLUS_PROCHE;
 import static org.impotch.util.TypeArrondi.UNITE_LA_PLUS_PROCHE;
 import static org.impotch.bareme.ConstructeurBareme.unBareme;
 
@@ -89,7 +89,7 @@ public class BaremeConstantParTrancheTest {
                 .jusqua(1000).valeur(1)
                 .de(1000).a(2000).valeur(2)
                 .plusDe(2000).valeur(3).construire()
-                .homothetieValeur(parse("120 %"), CINQ_CENTIEMES_LES_PLUS_PROCHES);
+                .homothetieValeur(parse("120 %"), VINGTIEME_LE_PLUS_PROCHE);
 
         assertThat(homothetique.calcul(1000)).isEqualTo("1.20");
         assertThat(homothetique.calcul(1001)).isEqualTo("2.40");

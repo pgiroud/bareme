@@ -22,7 +22,7 @@ import static java.math.RoundingMode.HALF_UP;
 import static java.math.BigDecimal.ZERO;
 import static org.assertj.core.api.Assertions.*;
 import static org.impotch.util.TypeArrondi.UNITE_LA_PLUS_PROCHE;
-import static org.impotch.util.TypeArrondi.CINQ_CENTIEMES_LES_PLUS_PROCHES;
+import static org.impotch.util.TypeArrondi.VINGTIEME_LE_PLUS_PROCHE;
 import static org.impotch.bareme.ConstructeurBareme.unBaremeATauxMarginal;
 
 public class BaremeTauxMarginalConstantParTrancheTest {
@@ -94,8 +94,8 @@ public class BaremeTauxMarginalConstantParTrancheTest {
         BigDecimal rapportRencherissement = indiceRencherissement.divide(indiceReference, 15, HALF_UP);
 
         Bareme bareme =  unBaremeATauxMarginal()
-                .typeArrondiSurChaqueTranche(CINQ_CENTIEMES_LES_PLUS_PROCHES)
-                .typeArrondiGlobal(CINQ_CENTIEMES_LES_PLUS_PROCHES)
+                .typeArrondiSurChaqueTranche(VINGTIEME_LE_PLUS_PROCHE)
+                .typeArrondiGlobal(VINGTIEME_LE_PLUS_PROCHE)
                 .jusqua(17493).taux("0 %")
                 .puisJusqua(21076).taux("8 %")
                 .puisJusqua(23184).taux("9 %")

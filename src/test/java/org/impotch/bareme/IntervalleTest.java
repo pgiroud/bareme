@@ -43,7 +43,7 @@ public class IntervalleTest {
     }
 
     @Test
-    public void appartientBorneSuperieureExcluse() {
+    public void appartientBorneSuperieureExclue() {
         Intervalle inter = new Intervalle.Cons()
                 .de(1000).inclus().a(2000).exclus()
                 .intervalle();
@@ -59,7 +59,7 @@ public class IntervalleTest {
     }
 
     @Test
-    public void appartientBorneInferieureExcluse() {
+    public void appartientBorneInferieureExclue() {
         Intervalle inter = new Intervalle.Cons()
                 .de(1000).exclus().a(2000).inclus()
                 .intervalle();

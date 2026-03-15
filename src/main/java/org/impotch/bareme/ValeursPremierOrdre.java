@@ -83,7 +83,7 @@ class ValeursPremierOrdre {
     }
 
     public ValeursPremierOrdre multiplie(BigDecimal rapport, TypeArrondi arrondi) {
-        BigDecimal valeurOrdre0 = arrondi.arrondirMontant(valeur.multiply(rapport));
+        BigDecimal valeurOrdre0 = arrondi.arrondir(valeur.multiply(rapport));
         return new ValeursPremierOrdre(valeurOrdre0,this.increment);
     }
 
